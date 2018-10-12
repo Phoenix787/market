@@ -1,4 +1,4 @@
-package ru.xenya.market.backend.data;
+package ru.xenya.market.backend.data.entity;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;

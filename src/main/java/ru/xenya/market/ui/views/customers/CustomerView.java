@@ -8,13 +8,12 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import ru.xenya.market.backend.data.Customer;
+import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.repositories.CustomerRepository;
-import ru.xenya.market.backend.service.CrudService;
 import ru.xenya.market.ui.MainView;
+import ru.xenya.market.ui.components.SearchBar;
 import ru.xenya.market.ui.components.common.AbstractEditorDialog;
 import ru.xenya.market.ui.utils.MarketConst;
-import ru.xenya.market.ui.utils.TemplateUtils;
 
 
 import java.util.List;
@@ -25,8 +24,8 @@ import static ru.xenya.market.ui.utils.MarketConst.PAGE_CUSTOMERS;
 @PageTitle(MarketConst.TITLE_CUSTOMERS)
 public class CustomerView extends VerticalLayout {
 
-//    @Id("search")
-//    private SearchBar search;
+    @Id("search")
+    private SearchBar search;
 
     private CustomerRepository repository;
 
@@ -44,14 +43,24 @@ public class CustomerView extends VerticalLayout {
 
     public CustomerView(CustomerRepository repository) {
         this.repository = repository;
+        search = new SearchBar();
+
         addCustomer.setText("Новый контрагент");
         addCustomer.addClickListener(e -> openForm(new Customer(), AbstractEditorDialog.Operation.ADD));
         this.form = new CustomerForm(this::saveUpdate, this::deleteUpdate);
       //  this.form.setBinder(binder);
+        setupSearchBar();
         setupButtonBar();
         setupGrid();
         setupEventListeners();
 
+    }
+
+    private void setupSearchBar() {
+        search.getFilterTextField().addValueChangeListener(e->updateList(search.getFilter()));
+        search.setActionText("Новый контрагент");
+        search.addActionClickListener(e -> openForm(new Customer(), AbstractEditorDialog.Operation.ADD));
+        add(search);
     }
 
     private void setupButtonBar() {
@@ -72,18 +81,19 @@ public class CustomerView extends VerticalLayout {
 
     private void saveUpdate(Customer customer, AbstractEditorDialog.Operation operation) {
         repository.save(customer);
-        updateList();
+        updateList(search.getFilter());
         Notification.show("Контрагент успешно " + operation.getNameInText(), 3000, Notification.Position.BOTTOM_START);
     }
 
     private void deleteUpdate(Customer customer){
         repository.delete(customer);
-        updateList();
+        updateList(search.getFilter());
         Notification.show("Контрагент успешно удален. ", 3000, Notification.Position.BOTTOM_START);
     }
 
-    private void updateList() {
-        List<Customer> customers = repository.findAll();
+    private void updateList(String filter) {
+      //  List<Customer> customers = repository.findByFullNameContainingIgnoreCase(filter);
+        List<Customer> customers = repository.findByFullNameContainingIgnoreCaseOrAddressContainingIgnoreCase(filter, filter);
         grid.setItems(customers);
     }
 
@@ -111,7 +121,7 @@ public class CustomerView extends VerticalLayout {
         grid.setHeight("100vh");
         grid.setColumns("id", "fullName", "address", "phoneNumbers");
         grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
-        updateList();
+        updateList(search.getFilter());
         add(grid);
 
     }

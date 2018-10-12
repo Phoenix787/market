@@ -4,9 +4,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import ru.xenya.market.backend.data.Customer;
-import ru.xenya.market.backend.repositories.CustomerRepository;
-import ru.xenya.market.backend.repositories.OrderRepository;
+import ru.xenya.market.backend.data.entity.User;
+import ru.xenya.market.backend.repositories.UserRepository;
 
 @SpringBootApplication
 public class MarketApplication {
@@ -16,12 +15,10 @@ public class MarketApplication {
 	}
 
 //	@Bean
-//	public CommandLineRunner loadData(CustomerRepository customerRepository, OrderRepository orderRepository) {
+//	public CommandLineRunner loadData(UserRepository customerRepository) {
 //		return (args)->{
-//			customerRepository.save(new Customer("Bill Gates"));
-//			customerRepository.save(new Customer("Mark Zuckerman"));
-//			customerRepository.save(new Customer("Paul Marcus"));
-//			customerRepository.save(new Customer("Jeff Brightman"));
+//			customerRepository.save(new User("bill@gates.com", "2222323232dfasdfdsf23232","Bill", "Gates", "admin", false));
+//
 //		};
 //	}
 }

@@ -1,7 +1,6 @@
 package ru.xenya.market.backend.service;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.xenya.market.backend.data.AbstractEntity;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;

@@ -1,6 +1,7 @@
-package ru.xenya.market.backend.data;
+package ru.xenya.market.backend.data.entity;
 
-import javax.persistence.Entity;
+import ru.xenya.market.backend.data.OrderState;
+
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

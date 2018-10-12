@@ -1,17 +1,13 @@
-package ru.xenya.market.backend.data;
+package ru.xenya.market.backend.data.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import ru.xenya.market.backend.data.OrderState;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity(name = "OrdersInfo")
