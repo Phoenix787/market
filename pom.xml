@@ -77,11 +77,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-cookie-consent-flow</artifactId>
-			<version>1.0.1</version>
-		</dependency>
 
 
 		<dependency>

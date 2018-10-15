@@ -1,5 +1,9 @@
 package ru.xenya.market.ui.views.customers;
 
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -23,7 +27,16 @@ public class CustomerForm extends AbstractEditorDialog<Customer> {
 
     public CustomerForm(BiConsumer<Customer, Operation> itemSaver, Consumer<Customer> itemDeleter) {
         super("Контрагент", itemSaver, itemDeleter);
+    //    setDivEdit();
         addNameField();
+    }
+
+    private void setDivEdit() {
+        Button editBtn = new Button("Edit");
+        Button newOrderBtn = new Button("New order");
+        Div div = new Div(editBtn, newOrderBtn);
+
+        add(div);
     }
 
     private void addNameField() {

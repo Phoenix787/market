@@ -2,10 +2,12 @@ package ru.xenya.market.ui.views.customers;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.polymertemplate.Id;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import ru.xenya.market.backend.data.entity.Customer;
@@ -98,13 +100,13 @@ public class CustomerView extends VerticalLayout {
     }
 
     private void setupEventListeners() {
-        grid.addSelectionListener(e->{
-            e.getFirstSelectedItem().ifPresent(entity ->{
-              //  navigateToEntity(entity.getId().toString());
-                navigateToEntity(entity);
-                grid.deselectAll();
-            });
-        });
+//        grid.addSelectionListener(e->{
+//            e.getFirstSelectedItem().ifPresent(entity ->{
+//              //  navigateToEntity(entity.getId().toString());
+//                navigateToEntity(entity);
+//                grid.deselectAll();
+//            });
+//        });
 
     }
 
@@ -117,13 +119,35 @@ public class CustomerView extends VerticalLayout {
     }
 
     private void setupGrid() {
-        this.grid = new Grid<>(Customer.class);
+        this.grid = new Grid<>();
         grid.setHeight("100vh");
-        grid.setColumns("id", "fullName", "address", "phoneNumbers");
-        grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
+        grid.addColumn(Customer::getId).setWidth("50px").setFlexGrow(0);
+        grid.addColumn(Customer::getFullName).setWidth("250px").setHeader("Наименование").setFlexGrow(5);
+        grid.addColumn(Customer::getAddress).setWidth("200px").setHeader("Адрес").setFlexGrow(5);
+        grid.addColumn(Customer::getPhoneNumbers).setWidth("250px").setFlexGrow(5);
+        grid.addColumn(new ComponentRenderer<>(this::createEditButton)).setFlexGrow(2);
+        grid.addColumn(new ComponentRenderer<>(this::createOrderButton)).setFlexGrow(2);
+
         updateList(search.getFilter());
         add(grid);
 
+    }
+
+    //todo сделать форму новый заказ и заинжектить сюда, чтобы открывалась форма нового заказа
+    private Button createEditButton(Customer customer) {
+        Button edit = new Button("Редактировать", event -> form.open(customer, AbstractEditorDialog.Operation.EDIT));
+        edit.setIcon(new Icon("lumo", "edit"));
+        edit.addClassName("customer__edit");
+        edit.getElement().setAttribute("theme", "tertiary");
+        return edit;
+    }
+
+    private Button createOrderButton(Customer customer) {
+        Button edit = new Button("Новый заказ", event -> form.open(customer, AbstractEditorDialog.Operation.EDIT));
+        edit.setIcon(new Icon("vaadin", "cart"));
+        edit.addClassName("customer__edit");
+        edit.getElement().setAttribute("theme", "tertiary");
+        return edit;
     }
 
     public Grid<Customer> getGrid(){

@@ -7,7 +7,6 @@ import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.router.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.xenya.market.ui.components.AppNavigation;
-import ru.xenya.market.ui.components.MarketCookieConsent;
 import ru.xenya.market.ui.components.common.ConfirmationDialog;
 import ru.xenya.market.ui.entities.PageInfo;
 import ru.xenya.market.ui.views.HasConfirmation;
@@ -46,7 +45,6 @@ public class MainView extends VerticalLayout implements RouterLayout, BeforeEnte
         add(appNavigation);
 
         getElement().appendChild(confirmationDialog.getElement());
-        getElement().appendChild(new MarketCookieConsent().getElement());
     }
 
     @Override

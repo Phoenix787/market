@@ -1,6 +1,7 @@
 package ru.xenya.market.ui.views.admin.users;
 
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -40,11 +41,16 @@ public class UserView extends VerticalLayout {
     }
 
     private void deleteUpdate(User user) {
+        repository.delete(user);
+        updateList(search.getFilter());
+        Notification.show("Пользователь успешно удалён", 3000, Notification.Position.BOTTOM_START);
 
     }
 
     private void saveUpdate(User user, AbstractEditorDialog.Operation operation) {
-
+        repository.save(user);
+        updateList(search.getFilter());
+        Notification.show("Пользователь успешно " + operation.getNameInText(), 3000, Notification.Position.BOTTOM_START);
     }
 
     private void setupSearchBar() {

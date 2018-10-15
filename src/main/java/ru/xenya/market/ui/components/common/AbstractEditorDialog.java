@@ -68,7 +68,7 @@ public abstract class AbstractEditorDialog<T> extends Dialog {
         initFormLayout();
         initButtonBar();
         setCloseOnEsc(true);
-        setCloseOnOutsideClick(false);
+      //  setCloseOnOutsideClick(false);
     }
 
     protected void initFormLayout() {

@@ -36,9 +36,10 @@ public class User extends AbstractEntity {
     @Size(max = 255)
     private String lastName;
 
-    @NotBlank
+  //  @NotBlank
     @Size(max = 255)
     private String role;
+
     private boolean locked = false;
 
     @PrePersist
