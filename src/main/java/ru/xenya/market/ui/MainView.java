@@ -1,10 +1,14 @@
 package ru.xenya.market.ui;
 
 import com.vaadin.flow.component.HasElement;
+import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.polymertemplate.Id;
+import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 //import ru.xenya.market.app.security.SecurityUtils;
 import ru.xenya.market.ui.components.AppNavigation;
@@ -18,14 +22,17 @@ import java.util.List;
 
 import static ru.xenya.market.ui.utils.MarketConst.*;
 
+@Tag("main-view")
+@HtmlImport("src/main-view.html")
 
 @PageTitle("Учет рекламы в газете \"Магнитогорский металл\"")
 @Viewport(VIEWPORT)
-@Route(PAGE_ROOT)
-public class MainView extends VerticalLayout implements RouterLayout, BeforeEnterObserver {
+//@Route(PAGE_ROOT)
+public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
+        implements RouterLayout, BeforeEnterObserver {
 
     @Id("appNavigation")
-    private AppNavigation appNavigation = new AppNavigation();
+    private AppNavigation appNavigation/* = new AppNavigation()*/;
 
 
     //private final ConfirmationDialog confirmationDialog;
@@ -44,7 +51,7 @@ public class MainView extends VerticalLayout implements RouterLayout, BeforeEnte
 //        }
         pages.add(new PageInfo(PAGE_LOGOUT, ICON_LOGOUT, TITLE_LOGOUT));
         appNavigation.init(pages, PAGE_DEFAULT, PAGE_LOGOUT);
-        add(appNavigation);
+       // add(appNavigation);
 
         getElement().appendChild(confirmationDialog.getElement());
     }
