@@ -16,6 +16,7 @@ import ru.xenya.market.ui.MainView;
 import ru.xenya.market.ui.components.SearchBar;
 import ru.xenya.market.ui.components.common.AbstractEditorDialog;
 import ru.xenya.market.ui.utils.MarketConst;
+import ru.xenya.market.ui.views.orderedit.OrderView;
 
 
 import java.util.List;
@@ -39,17 +40,19 @@ public class CustomerView extends VerticalLayout {
 
 
     private final CustomerForm form;
+    private final OrderView orderView;
 
 
     // private final BeanValidationBinder<Customer> binder = new BeanValidationBinder<>(Customer.class);
 
-    public CustomerView(CustomerRepository repository) {
+    public CustomerView(CustomerRepository repository, OrderView orderView) {
         this.repository = repository;
         search = new SearchBar();
 
         addCustomer.setText("Новый контрагент");
         addCustomer.addClickListener(e -> openForm(new Customer(), AbstractEditorDialog.Operation.ADD));
         this.form = new CustomerForm(this::saveUpdate, this::deleteUpdate);
+        this.orderView = orderView;
       //  this.form.setBinder(binder);
         setupSearchBar();
         setupButtonBar();
@@ -133,9 +136,9 @@ public class CustomerView extends VerticalLayout {
 
     }
 
-    //todo сделать форму новый заказ и заинжектить сюда, чтобы открывалась форма нового заказа
     private Button createEditButton(Customer customer) {
-        Button edit = new Button("Редактировать", event -> form.open(customer, AbstractEditorDialog.Operation.EDIT));
+        Button edit = new Button("Редактировать",
+                event -> form.open(customer, AbstractEditorDialog.Operation.EDIT));
         edit.setIcon(new Icon("lumo", "edit"));
         edit.addClassName("customer__edit");
         edit.getElement().setAttribute("theme", "tertiary");
@@ -143,7 +146,7 @@ public class CustomerView extends VerticalLayout {
     }
 
     private Button createOrderButton(Customer customer) {
-        Button edit = new Button("Новый заказ", event -> form.open(customer, AbstractEditorDialog.Operation.EDIT));
+        Button edit = new Button("Заказы", event -> orderView.open(customer));
         edit.setIcon(new Icon("vaadin", "cart"));
         edit.addClassName("customer__edit");
         edit.getElement().setAttribute("theme", "tertiary");

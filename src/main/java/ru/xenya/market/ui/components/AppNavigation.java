@@ -1,24 +1,30 @@
 package ru.xenya.market.ui.components;
 
+import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.IronIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.polymertemplate.Id;
+import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.templatemodel.TemplateModel;
 import ru.xenya.market.ui.entities.PageInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppNavigation extends VerticalLayout implements AfterNavigationObserver {
+@Tag("app-navigation")
+@HtmlImport("src/components/app-navigation.html")
+public class AppNavigation extends /*VerticalLayout*/PolymerTemplate<TemplateModel> implements AfterNavigationObserver {
 
     @Id("tabs")
-    private Tabs tabs = new Tabs();
+    private Tabs tabs; /*= new Tabs();*/
 
     private List<String> hrefs = new ArrayList<>();
     private String logoutHref;
@@ -36,7 +42,7 @@ public class AppNavigation extends VerticalLayout implements AfterNavigationObse
             tabs.add(tab);
         }
         tabs.addSelectedChangeListener(e -> navigate());
-        add(tabs);
+      //  add(tabs);
     }
 
     private void navigate() {

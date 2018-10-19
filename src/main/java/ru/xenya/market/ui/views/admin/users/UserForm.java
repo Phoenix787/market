@@ -9,11 +9,9 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import ru.xenya.market.backend.data.Role;
-import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.ui.components.common.AbstractEditorDialog;
 
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -69,7 +67,7 @@ public class UserForm extends AbstractEditorDialog<User> {
         }, "need 6 or more chars, mixing digits, lowercase and uppercase letters")
                 .bind(user->password.getEmptyValue(), (user, pass)->{
                     if (!password.getEmptyValue().equals(pass)){
-//                        user.setPasswordHash(passwordEncoder.encode(pass));
+//                        users.setPasswordHash(passwordEncoder.encode(pass));
                         user.setPasswordHash(pass);
                     }
                 });

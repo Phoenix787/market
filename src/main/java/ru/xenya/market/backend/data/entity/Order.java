@@ -1,7 +1,9 @@
 package ru.xenya.market.backend.data.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import ru.xenya.market.backend.data.OrderState;
 
 import javax.persistence.*;
@@ -13,13 +15,14 @@ import java.time.LocalDate;
 @Entity(name = "OrdersInfo")
 @Table(name = "orders")
 @Data
+@AllArgsConstructor
 public class Order extends AbstractEntity {
 
   //  @Temporal(TemporalType.TIMESTAMP)
-    @NotNull(message = "{market.due.date.required}")
-    private LocalDate date;
+    @NotNull(message = "{market.due.dueDate.required}")
+    private LocalDate dueDate;
 
-    @NotBlank
+    @NotNull(message = "{market.payment.required}")
     private Payment payment;
 
 //    //множество позиций заказа
@@ -51,8 +54,16 @@ public class Order extends AbstractEntity {
     public Order() {
     }
 
+    public Order(Customer customer) {
+        this.orderState = OrderState.NEW;
+        this.payment = Payment.CASH;
+        setCustomer(customer);
+       // addHistoryItem(createdBy, "Заказ размещён");
+    }
+
     public Order(User createdBy){
         this.orderState = OrderState.NEW;
+        this.payment = Payment.CASH;
         setCustomer(new Customer());
         addHistoryItem(createdBy, "Заказ размещен");
      //   this.items = new ArrayList<>();
@@ -68,12 +79,12 @@ public class Order extends AbstractEntity {
 //        history.add(item);
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getDueDate() {
+        return dueDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 
     public Payment getPayment() {

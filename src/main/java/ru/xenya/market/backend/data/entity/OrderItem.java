@@ -1,4 +1,7 @@
 package ru.xenya.market.backend.data.entity;
 
-public class OrderItem {
+import javax.persistence.Entity;
+
+@Entity
+public class OrderItem extends AbstractEntity{
 }

@@ -66,4 +66,10 @@ public class ConfirmationDialog<T> extends Dialog {
         }
         open();
     }
+
+    //todo setText(message.getMessage());
+    //		setHeader(message.getCaption());
+    //		setCancelText(message.getCancelText());
+    //		setConfirmText(message.getOkText());
+    //		setOpened(true);
 }

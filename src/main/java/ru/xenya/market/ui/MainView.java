@@ -6,9 +6,11 @@ import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.router.*;
 import org.springframework.beans.factory.annotation.Autowired;
+//import ru.xenya.market.app.security.SecurityUtils;
 import ru.xenya.market.ui.components.AppNavigation;
 import ru.xenya.market.ui.components.common.ConfirmationDialog;
 import ru.xenya.market.ui.entities.PageInfo;
+import ru.xenya.market.ui.exceptions.AccessDeniedException;
 import ru.xenya.market.ui.views.HasConfirmation;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class MainView extends VerticalLayout implements RouterLayout, BeforeEnte
     //private final ConfirmationDialog confirmationDialog;
     private final ConfirmationDialog confirmationDialog;
 
-    @Autowired
+   // @Autowired
     public MainView() {
         this.confirmationDialog = new ConfirmationDialog();
 

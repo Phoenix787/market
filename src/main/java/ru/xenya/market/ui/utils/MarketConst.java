@@ -35,4 +35,5 @@ public class MarketConst {
 
     public static final String VIEWPORT = "width=device-width, minimum-scale=1, initial-scale=1, users-scalable=yes";
 
+    public static final int NOTIFICATION_DURATION = 4000;
 }

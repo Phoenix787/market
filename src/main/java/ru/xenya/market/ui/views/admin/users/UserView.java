@@ -3,23 +3,15 @@ package ru.xenya.market.ui.views.admin.users;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import ru.xenya.market.backend.data.Role;
-import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.UserRepository;
-import ru.xenya.market.ui.MainView;
 import ru.xenya.market.ui.components.SearchBar;
 import ru.xenya.market.ui.components.common.AbstractEditorDialog;
-import ru.xenya.market.ui.utils.MarketConst;
 
 import java.util.List;
 
-import static ru.xenya.market.ui.utils.MarketConst.PAGE_USERS;
-
-@Route(value = PAGE_USERS, layout = MainView.class)
-@PageTitle(MarketConst.TITLE_USERS)
+/*@Route(value = PAGE_USERS, layout = MainView.class)
+@PageTitle(MarketConst.TITLE_USERS)*/
 //@Secured(Role.ADMIN)
 public class UserView extends VerticalLayout {
 
