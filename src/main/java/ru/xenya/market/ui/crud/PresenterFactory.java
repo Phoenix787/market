@@ -4,7 +4,9 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.User;
+import ru.xenya.market.backend.service.OrderService;
 import ru.xenya.market.backend.service.UserService;
 
 @Configuration
@@ -18,6 +20,12 @@ public class PresenterFactory {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public CrudEntityPresenter<User> userPresenter(UserService crudService, User currentUser) {
+        return new CrudEntityPresenter<>(crudService, currentUser);
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public CrudEntityPresenter<Order> orderPresenter(OrderService crudService, User currentUser) {
         return new CrudEntityPresenter<>(crudService, currentUser);
     }
 }

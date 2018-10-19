@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-public class OrderService implements CrudService<Order> {
+public class OrderService implements FilterableCrudService<Order> {
 
     private OrderRepository orderRepository;
 
@@ -77,5 +77,16 @@ public class OrderService implements CrudService<Order> {
         Order order = new Order(currentUser);
         order.setDueDate(LocalDate.now());
         return order;
+    }
+
+    @Override
+    public Page<Order> findAnyMatching(Optional<String> filter, Pageable pageable) {
+        return null;
+        //todo сделать по аналогии с userservice
+    }
+
+    @Override
+    public long countAnyMatching(Optional<String> filter) {
+        return 0;
     }
 }

@@ -1,6 +1,7 @@
 package ru.xenya.market.ui.views.orderedit;
 
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasText;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -12,6 +13,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -25,20 +27,24 @@ import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.Payment;
 import ru.xenya.market.backend.data.entity.User;
+import ru.xenya.market.ui.components.FormButtonsBar;
+import ru.xenya.market.ui.crud.CrudView.CrudForm;
 import ru.xenya.market.ui.dataproviders.DataProviderUtils;
 import ru.xenya.market.ui.events.CancelEvent;
 import ru.xenya.market.ui.events.ReviewEvent;
 import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 
-
+//todo
 import static ru.xenya.market.ui.dataproviders.DataProviderUtils.createItemLabelGenerator;
 
 @Tag("order-editor")
 @HtmlImport("src/views/orderedit/order-editor.html")
 @SpringComponent
 @UIScope
-public class OrderEditor extends PolymerTemplate<OrderEditor.Model> /*AbstractEditorDialog<Order>*/ {
+public class OrderEditor extends PolymerTemplate<OrderEditor.Model> implements CrudForm<Order> /*AbstractEditorDialog<Order>*/ {
+
+
 
     public interface Model extends TemplateModel{
         void setTotalPrice(String totalPrice);
@@ -190,6 +196,21 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model> /*AbstractEd
 
     private boolean hasChanges(){
         return binder.hasChanges();     // itemEditor.hasChanges();
+    }
+
+    @Override
+    public FormButtonsBar getButtons() {
+        return null;
+    }
+
+    @Override
+    public HasText getTitle() {
+        return null;
+    }
+
+    @Override
+    public void setBinder(BeanValidationBinder<Order> binder) {
+
     }
 
     //    private DatePicker dueDate;
