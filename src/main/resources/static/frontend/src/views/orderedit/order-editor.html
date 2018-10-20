@@ -9,7 +9,7 @@
 <link rel="import" href="../../../bower_components/vaadin-date-picker/src/vaadin-date-picker.html">
 <link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
 
-<link rel="import" href="../../components/buttons-bar.html">
+<link rel="import" href="../../components/form-buttons-bar.html">
 <link rel="import" href="../../components/utils-mixin.html">
 <!--<link rel="import" href="order-item-editor.html">-->
 
@@ -61,14 +61,15 @@
             </vaadin-form-layout>
         </div>
 
-        <buttons-bar id="footer" no-scroll$="[[niScroll]]">
-            <vaadin-button slot="left" id="cancel">Отменить</vaadin-button>
-            <div slot="info" class="total">Total [[totalPrice]]</div>
-            <vaadin-button slot="right" id="review" theme="primary">
-                Просмотр заказа
-                <iron-icon icon="vaadin-arrow-right" slot="suffix"></iron-icon>
-            </vaadin-button>
-        </buttons-bar>
+        <form-buttons-bar id="buttons"></form-buttons-bar>
+        <!--<buttons-bar id="footer" no-scroll$="[[niScroll]]">-->
+            <!--<vaadin-button slot="left" id="cancel">Отменить</vaadin-button>-->
+            <!--<div slot="info" class="total">Total [[totalPrice]]</div>-->
+            <!--<vaadin-button slot="right" id="review" theme="primary">-->
+                <!--Просмотр заказа-->
+                <!--<iron-icon icon="vaadin-arrow-right" slot="suffix"></iron-icon>-->
+            <!--</vaadin-button>-->
+        <!--</buttons-bar>-->
     </template>
 
     <script>

@@ -6,6 +6,7 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -55,22 +56,23 @@ public class CustomerViewTemplate extends CrudView<Customer, TemplateModel>/**/ 
 
     // private final CustomerEditor customerEditor;
 
-//    private final OrdersViewOfCustomer ordersView;
+    private final OrdersViewOfCustomer ordersView;
 
     private final BeanValidationBinder<Customer> binder = new BeanValidationBinder<>(Customer.class);
 
     @Autowired
     public CustomerViewTemplate(CrudEntityPresenter<Customer> customerPresenter, CustomerEditor customerEditor
-                                /*OrdersViewOfCustomer ordersView*/) {
+                                , OrdersViewOfCustomer ordersView) {
         super(EntityUtil.getName(Customer.class), customerEditor);
         this.customerPresenter = customerPresenter;
-//        this.ordersView = ordersView;
+        this.ordersView = ordersView;
 //        this.customerEditor = customerEditor;
 
         customerEditor.setBinder(binder);
         setupEventListeners();
         setupGrid();
         customerPresenter.setView(this);
+        //dialog.add(this.ordersView);
 
         dialog.getElement().addEventListener("opened-changed", e -> {
             if (!dialog.isOpened()) {
@@ -94,9 +96,9 @@ public class CustomerViewTemplate extends CrudView<Customer, TemplateModel>/**/ 
     private Button openOrdersButton(Customer customer) {
         Button button = new Button("Заказы", VaadinIcon.CHECK.create());
         button.addClickListener(e -> {
-//            ordersView.setCurrentCustomer(customer);
-//            dialog.add(ordersView);
-            dialog.open();
+            ordersView.open(customer);
+            dialog.add(ordersView);
+           dialog.open();
         });
         return button;
     }

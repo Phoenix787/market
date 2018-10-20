@@ -42,7 +42,8 @@ import static ru.xenya.market.ui.dataproviders.DataProviderUtils.createItemLabel
 @HtmlImport("src/views/orderedit/order-editor.html")
 @SpringComponent
 @UIScope
-public class OrderEditor extends PolymerTemplate<OrderEditor.Model> implements CrudForm<Order> /*AbstractEditorDialog<Order>*/ {
+public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
+        implements CrudForm<Order> /*AbstractEditorDialog<Order>*/ {
 
 
 
@@ -70,12 +71,15 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model> implements C
     private TextField customerName;
     @Id("customerPhone")
     private TextField customerPhone;
-    @Id("cancel")
-    private Button cancel;
-    @Id("review")
-    private Button review;
+//    @Id("cancel")
+//    private Button cancel;
+//    @Id("review")
+//    private Button review;
     @Id("itemsContainer")
     private Div itemsContainer;
+
+    @Id("buttons")
+    private FormButtonsBar buttons;
 
 //    private OrderItemsEditor itemsEditor;
 
@@ -95,8 +99,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model> implements C
 //        itemsContainer.addClassName(itemsEditor);
         customerName.setEnabled(false);
         customerPhone.setEnabled(false);
-        cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
-        review.addClickListener(e -> fireEvent(new ReviewEvent(this)));
+//        cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
+//        review.addClickListener(e -> fireEvent(new ReviewEvent(this)));
         status.setItemLabelGenerator(createItemLabelGenerator(OrderState::getDisplayName));
         status.setDataProvider(DataProvider.ofItems(OrderState.values()));
         status.addValueChangeListener(
@@ -158,7 +162,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model> implements C
             getModel().setStatus(order.getOrderState().name());
         }
 
-        review.setEnabled(false);
+//        review.setEnabled(false);
     }
 
     private void save(){
@@ -200,17 +204,17 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model> implements C
 
     @Override
     public FormButtonsBar getButtons() {
-        return null;
+        return buttons;
     }
 
     @Override
     public HasText getTitle() {
-        return null;
+        return title;
     }
 
     @Override
     public void setBinder(BeanValidationBinder<Order> binder) {
-
+       // this.binder = binder;
     }
 
     //    private DatePicker dueDate;

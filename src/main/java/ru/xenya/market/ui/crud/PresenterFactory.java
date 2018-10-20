@@ -25,6 +25,11 @@ public class PresenterFactory {
     }
 
     @Bean
+    public Order getOrder() {
+        return new Order();
+    }
+
+    @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public CrudEntityPresenter<User> userPresenter(UserService crudService, User currentUser) {
         return new CrudEntityPresenter<>(crudService, currentUser);
@@ -36,9 +41,9 @@ public class PresenterFactory {
         return new CrudEntityPresenter<>(crudService, currentUser);
     }
 
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public CrudEntityPresenter<Order> orderPresenter(OrderService crudService, User currentUser) {
-        return new CrudEntityPresenter<>(crudService, currentUser);
-    }
+//    @Bean
+//    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+//    public CrudEntityPresenter<Order> orderPresenterC(OrderService crudService, User currentUser) {
+//        return new CrudEntityPresenter<>(crudService, currentUser);
+//    }
 }

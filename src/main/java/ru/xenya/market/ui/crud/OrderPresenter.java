@@ -11,32 +11,42 @@ import ru.xenya.market.ui.dataproviders.OrdersGridDataProvider;
 import ru.xenya.market.ui.views.customers.CustomerViewTemplate;
 import ru.xenya.market.ui.views.orderedit.OrdersViewOfCustomer;
 
+import javax.validation.OverridesAttribute;
 import java.util.List;
+
+//todo разобраться с вызовом формы при нажатии добавить на searchbar
+
 
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class OrderPresenter {
+public class OrderPresenter extends CrudEntityPresenter<Order> {
 
     private OrdersViewOfCustomer view;
 
 //    private final EntityPresenter<Order, CustomerViewTemplate> entityPresenter;
 //    private final OrdersGridDataProvider dataProvider;
-//    private final User currentUser;
+    private final User currentUser;
     private final OrderService orderService;
     private Customer currentCustomer;
 
-    public OrderPresenter(OrderService orderService) {
+    public OrderPresenter(OrderService orderService, User currentUser) {
+        super(orderService, currentUser);
 //        this.dataProvider = dataProvider;
         this.orderService = orderService;
         //this.currentCustomer = currentCustomer;
+        this.currentUser = currentUser;
+
     }
 
     public void setView(OrdersViewOfCustomer view) {
         this.view = view;
+        view.getSearchBar().addActionClickListener(e->createNew());
         view.getGrid().setItems(updateList());
     }
+
+
 //todo подумать насчет фильтра через Optional<String>
-    private List<Order> updateList() {
+    public List<Order> updateList() {
         return orderService.findByCustomer(currentCustomer);
     }
 
@@ -44,6 +54,10 @@ public class OrderPresenter {
         this.currentCustomer = currentCustomer;
     }
 
+    public Order createNew() {
+
+        return orderService.createNew(currentUser);
+    }
 
     //}
 }
