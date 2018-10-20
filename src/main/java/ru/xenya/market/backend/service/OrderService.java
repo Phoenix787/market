@@ -3,19 +3,19 @@ package ru.xenya.market.backend.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Service;
 import ru.xenya.market.backend.data.OrderState;
+import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.OrderRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 
+@Service
 public class OrderService implements FilterableCrudService<Order> {
 
     private OrderRepository orderRepository;
@@ -67,7 +67,7 @@ public class OrderService implements FilterableCrudService<Order> {
     }
 
     @Override
-    public JpaRepository<Order, Long> getRepository() {
+    public OrderRepository getRepository() {
         return orderRepository;
     }
 
@@ -81,12 +81,26 @@ public class OrderService implements FilterableCrudService<Order> {
 
     @Override
     public Page<Order> findAnyMatching(Optional<String> filter, Pageable pageable) {
-        return null;
-        //todo сделать по аналогии с userservice
+        if (filter.isPresent()){
+            String repositoryFilter = "%" + filter.get() + "%";
+            return getRepository().findByCustomerFullNameContainingIgnoreCase(
+                            repositoryFilter, pageable
+                    );
+        } else {
+            return find(pageable);
+        }
+    }
+
+    private Page<Order> find(Pageable pageable) {
+                   return orderRepository.findAll(pageable);
     }
 
     @Override
     public long countAnyMatching(Optional<String> filter) {
         return 0;
+    }
+
+    public List<Order> findByCustomer(Customer currentCustomer) {
+        return orderRepository.findByCustomer(currentCustomer);
     }
 }

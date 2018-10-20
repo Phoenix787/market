@@ -14,14 +14,16 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 //import ru.xenya.market.app.security.SecurityConfiguration;
 import ru.xenya.market.backend.data.entity.User;
+import ru.xenya.market.backend.repositories.CustomerRepository;
 import ru.xenya.market.backend.repositories.UserRepository;
+import ru.xenya.market.backend.service.CustomerService;
 import ru.xenya.market.backend.service.UserService;
 import ru.xenya.market.ui.MainView;
 import ru.xenya.market.ui.crud.CrudEntityPresenter;
 
 @SpringBootApplication(scanBasePackageClasses = {/*SecurityConfiguration.class,*/ MainView.class, MarketApplication.class,
-		UserService.class}, exclude = ErrorMvcAutoConfiguration.class)
-@EnableJpaRepositories(basePackageClasses = { UserRepository.class })
+		CustomerService.class, UserService.class}, exclude = ErrorMvcAutoConfiguration.class)
+@EnableJpaRepositories(basePackageClasses = { UserRepository.class, CustomerRepository.class})
 @EntityScan(basePackageClasses = { User.class })
 
 public class MarketApplication extends SpringBootServletInitializer {

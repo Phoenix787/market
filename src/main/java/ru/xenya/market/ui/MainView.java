@@ -27,7 +27,7 @@ import static ru.xenya.market.ui.utils.MarketConst.*;
 
 @PageTitle("Учет рекламы в газете \"Магнитогорский металл\"")
 @Viewport(VIEWPORT)
-//@Route(PAGE_ROOT)
+@Route(PAGE_ROOT)
 public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
         implements RouterLayout, BeforeEnterObserver {
 
