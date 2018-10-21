@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -23,11 +24,11 @@ public class Customer extends AbstractEntity {
     @Pattern(regexp = "^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$", message = "{market.phone.number.invalid")
     private String phoneNumberForSMS;
 
-    @OneToMany (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderColumn
     @JoinColumn
-  //  @NotEmpty
-    private List<Order> orders;
+    //  @NotEmpty
+    private List<Order> orders = new ArrayList<>();
 
     public Customer() {
     }

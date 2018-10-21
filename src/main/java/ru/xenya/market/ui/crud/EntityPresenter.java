@@ -51,7 +51,7 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
     }
 
     public void save(CrudOperationListener<T> onSuccess) {
-        if (executeOperation(()-> saveEntity())){
+        if (executeOperation(this::saveEntity)){
             onSuccess.execute(state.getEntity());
         }
     }
@@ -84,7 +84,7 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
     }
 
     private void saveEntity(){
-        state.updateEntity(crudService.save(/*currentUser,*/ state.getEntity()), isNew());
+        state.updateEntity(crudService.save(currentUser, state.getEntity()), isNew());
     }
 
     public boolean writeEntity() {

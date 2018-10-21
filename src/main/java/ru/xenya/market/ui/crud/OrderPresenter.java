@@ -86,37 +86,42 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
     @Override
     public Order createNew() {
         orderService.setCurrentCustomer(currentCustomer);
-        open(entityPresenter.createNew(), true);
-        return orderService.createNew(currentUser);
+        System.out.println("from orderpresenter->createNew->currentCustomer: " + orderService.getCurrentCustomer().getFullName());
+        Order order = orderService.createNew(currentUser);
+        System.err.println("from orderPresenter->create order " + order);
+        open(/*entityPresenter.createNew()*/ order, true);
+        return /*orderService.createNew(currentUser)*/  order;
     }
 
     private void open(Order order, boolean edit) {
-        if (edit) {
-            view.getForm().read(order, entityPresenter.isNew());
-            view.getDialog().add(view.getForm());
+ //       if (edit) {
+            currentOrder = order;
+            view.getForm().read(order, true /*entityPresenter.isNew()*/);
+           view.getDialog().add(view.getForm());
             view.getDialog().open();
-        }
+
+      //  }
     }
 
     public void save() {
 //todo customer-order
 
-       // Order order = view.getForm().getBinder().getBean();
-      //  if (view.getForm().getBinder().getBean() == null)
-     //   Notification.show("getBinder.getBean == null");
+        Order order = view.getForm().getBinder().getBean();
+            Notification.show("" +order);
+
     //    order.setCustomer(currentCustomer);
-      //  orderService.saveOrder(order);
+       orderService.saveOrder(order);
       //  if (writeEntity()){
-            super.save(e->{
+           /* super.save(e->{
                 if (isNew()) {
-                    getView().showCreatedNotification();
-                    updateList();
-                } else {
-                    getView().showUpdateNotification();
-                    updateList();
-                }
+                    getView().showCreatedNotification();*/
+                 view.getGrid().setItems(updateList());
+//             //   } else {
+//                    getView().showUpdateNotification();
+//                    updateList();
+//                }
                 closeSilently();
-            });
+//            });
        // }
     }
 
@@ -142,8 +147,9 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
 //    }
 //
     public void closeSilently() {
-        close();
-        getView().closeDialog();
+      //  close();
+       // getView().closeDialog();
+        view.getDialog().close();
     }
     //}
 

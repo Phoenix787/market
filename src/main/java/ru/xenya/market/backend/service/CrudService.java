@@ -11,8 +11,8 @@ public interface CrudService<T extends AbstractEntity> {
 
     JpaRepository<T, Long> getRepository();
 
-    default T save(T entity){
-        return getRepository().saveAndFlush(entity);
+    default T save(User currentUser, T entity){
+        return getRepository().saveAndFlush(entity); //
     }
 
     default void delete(/*User currentUser, */T entity) {

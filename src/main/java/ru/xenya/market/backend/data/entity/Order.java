@@ -12,8 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
-@Entity(name = "OrdersInfo")
-@Table(name = "orders")
+@Entity(name = "orders")
 @Data
 @AllArgsConstructor
 public class Order extends AbstractEntity {
@@ -47,7 +46,7 @@ public class Order extends AbstractEntity {
     private OrderState orderState;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Customer customer;
 
 
@@ -57,8 +56,9 @@ public class Order extends AbstractEntity {
     public Order(Customer customer, User createdBy) {
         this.orderState = OrderState.NEW;
         this.payment = Payment.CASH;
+        this.dueDate = LocalDate.now();
         setCustomer(customer);
-        addHistoryItem(createdBy, "Заказ размещён");
+       // addHistoryItem(createdBy, "Заказ размещён");
     }
 
     public Order(User createdBy){
@@ -71,8 +71,8 @@ public class Order extends AbstractEntity {
     }
 
     public void addHistoryItem(User createdBy, String comment) {
-        HistoryItem item = new HistoryItem(createdBy, comment);
-        item.setNewState(orderState);
+//        HistoryItem item = new HistoryItem(createdBy, comment);
+//        item.setNewState(orderState);
 //        if (history == null) {
 //            history = new LinkedList<>();
 //        }
@@ -133,5 +133,15 @@ public class Order extends AbstractEntity {
         if (createHistory) {
             addHistoryItem(user, "Заказ " + orderState.name());
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "dueDate=" + dueDate.toString() +
+                ", payment=" + payment.name() +
+                ", orderState=" + orderState.name() +
+                ", customer=" + customer.getFullName() +
+                '}';
     }
 }

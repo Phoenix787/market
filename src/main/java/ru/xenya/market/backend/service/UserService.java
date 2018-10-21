@@ -59,7 +59,7 @@ public class UserService implements FilterableCrudService<User> {
     }
 
     @Override
-    public User save(/*User currentUser,*/ User entity) {
+    public User save(User currentUser, User entity) {
         throwIfUserLocked(entity);
         return getRepository().saveAndFlush(entity);
     }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
+import ru.xenya.market.backend.data.entity.Payment;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.OrderRepository;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
@@ -22,6 +23,10 @@ public class OrderService implements FilterableCrudService<Order> {
 
     private OrderRepository orderRepository;
     private Customer currentCustomer;
+
+    public Customer getCurrentCustomer() {
+        return currentCustomer;
+    }
 
     public void setCurrentCustomer(Customer currentCustomer) {
         this.currentCustomer = currentCustomer;
@@ -96,7 +101,10 @@ public class OrderService implements FilterableCrudService<Order> {
     @Transactional
     public Order createNew(User currentUser) {
         Order order = new Order(currentCustomer, currentUser);
+        System.out.println("from orderservice->createNew: " + order);
         order.setDueDate(LocalDate.now());
+//        order.setOrderState(OrderState.NEW);
+//        order.setPayment(Payment.CASH);
         return order;
     }
 

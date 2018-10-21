@@ -167,12 +167,15 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     public void read(Order order, boolean isNew) {
         order.setCustomer(currentCustomer);
-        binder.readBean(order);
+        binder.setBean(order);
+        System.err.println("from orderEditor->read: " + order);
+     //   binder.readBean(order);
         this.orderNumber.setText(isNew ? "" : order.getId().toString());
 
         title.setVisible(isNew);
         metaContainer.setVisible(!isNew);
-        customerName.setValue(currentCustomer.getFullName());
+        customerName.setValue(order.getCustomer().getFullName());
+        customerPhone.setValue(order.getCustomer().getPhoneNumbers());
 
         if (order.getOrderState() != null) {
             getModel().setStatus(order.getOrderState().name());

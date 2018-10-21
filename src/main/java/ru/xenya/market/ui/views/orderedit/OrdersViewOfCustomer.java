@@ -60,7 +60,7 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
         setupGrid();
         setupEventListeners();
        // getSearchBar().addActionClickListener(e->presenter.createNewOrder());
-        form.setBinder(binder);
+       // form.setBinder(binder);
     }
 
 
