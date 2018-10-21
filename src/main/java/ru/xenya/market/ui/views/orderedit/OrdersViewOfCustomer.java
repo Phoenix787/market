@@ -3,8 +3,8 @@ package ru.xenya.market.ui.views.orderedit;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -18,14 +18,16 @@ import ru.xenya.market.ui.crud.CrudEntityPresenter;
 import ru.xenya.market.ui.crud.CrudView;
 import ru.xenya.market.ui.crud.OrderPresenter;
 import ru.xenya.market.ui.utils.MarketConst;
-
-import static ru.xenya.market.ui.utils.MarketConst.PAGE_CUSTOMERS;
+import ru.xenya.market.ui.utils.TemplateUtils;
 
 @Tag("orders-view-of-customer")
 @HtmlImport("src/views/orderedit/orders-view-of-customer.html")
 @SpringComponent
 @UIScope
 public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
+
+    @Id("text")
+    private TextField text;
 
     @Id("search")
     private SearchBar searchBar;
@@ -36,9 +38,12 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
     //private Dialog dialog;
     private Customer currentCustomer;
 
+
 //    private final CrudEntityPresenter<Order> presenter;
 
     private final OrderPresenter presenter;
+
+//    private OrderEditor form;
 
     private final BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
 
@@ -46,17 +51,21 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
     public OrdersViewOfCustomer(OrderPresenter presenter, OrderEditor form) {
         super(EntityUtil.getName(Order.class), form);
         this.presenter = presenter;
-        presenter.setView(this);
+      //  this.form = form;
+        presenter.init(this);
+      //  presenter.setView(this);
 
 
 
         setupGrid();
         setupEventListeners();
+       // getSearchBar().addActionClickListener(e->presenter.createNewOrder());
         form.setBinder(binder);
     }
 
 
     public void open(Customer customer) {
+        text.setValue(customer.getFullName());
         presenter.setCurrentCustomer(customer);
         grid.setItems(presenter.updateList());
 
@@ -79,11 +88,15 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
         this.currentCustomer = currentCustomer;
     }
 
+//    @Override
+//    protected CrudEntityPresenter<Order> getPresenter() {
+//        return presenter;
+//    }
+
     @Override
-    protected CrudEntityPresenter<Order> getPresenter() {
+    protected OrderPresenter getPresenter() {
         return presenter;
     }
-
 
 
     @Override
@@ -92,7 +105,7 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
     }
 
     @Override
-    protected BeanValidationBinder<Order> getBinder() {
+    public BeanValidationBinder<Order> getBinder() {
         return binder;
     }
 
@@ -106,5 +119,47 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
         return grid;
     }
 
+    @Override
+    public OrderEditor getForm() {
+        return (OrderEditor) super.getForm();
+    }
 
+    //    void setDialogElementsVisibility(boolean editing) {
+//        dialog.add(editing ? orderEditor : orderDetails);
+//        orderEditor.setVisible(editing);
+//        orderDetails.setVisible(!editing);
+//    }
+
+    public void setupEventListeners() {
+        getGrid().addSelectionListener(e->{
+            e.getFirstSelectedItem().ifPresent(entity->{
+                navigateToEntity(entity.getId().toString());
+                getGrid().deselectAll();
+            });
+        });
+
+     //   getForm().getButtons().addSaveListener(e -> getPresenter().save());
+     //   getForm().getButtons().addCancelListener(e -> getPresenter().cancel());
+
+        getDialog().getElement().addEventListener("opened-changed", e->{
+            if (!getDialog().isOpened()) {
+                getPresenter().cancel();
+            }
+        });
+
+      //  getForm().getButtons().addDeleteListener(e -> getPresenter().delete());
+
+        getSearchBar().addActionClickListener(e -> getPresenter().createNew());
+        getSearchBar().addFilterChangeListener(e->getPresenter().filter(getSearchBar().getFilter()));
+        getSearchBar().setActionText("New " + EntityUtil.getName(Order.class));
+        getBinder().addValueChangeListener(e -> getPresenter().onValueChange(isDirty()));
+    }
+
+    public void navigateToEntity(String id) {
+        getUI().ifPresent(ui-> ui.navigate(TemplateUtils.generateLocation(getBasePage(), id)));
+    }
+
+    public OrderEditor getOpenedOrderEditor() {
+        return getForm();
+    }
 }

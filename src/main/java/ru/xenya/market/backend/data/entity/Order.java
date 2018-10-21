@@ -54,11 +54,11 @@ public class Order extends AbstractEntity {
     public Order() {
     }
 
-    public Order(Customer customer) {
+    public Order(Customer customer, User createdBy) {
         this.orderState = OrderState.NEW;
         this.payment = Payment.CASH;
         setCustomer(customer);
-       // addHistoryItem(createdBy, "Заказ размещён");
+        addHistoryItem(createdBy, "Заказ размещён");
     }
 
     public Order(User createdBy){

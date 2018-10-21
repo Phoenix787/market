@@ -1,5 +1,6 @@
 package ru.xenya.market.ui.crud;
 
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -94,6 +95,7 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
             view.showError(CrudErrorMessage.REQUIRED_FIELDS_MISSING, false);
             return false;
         } catch (NullPointerException e) {
+            Notification.show("NullPointerException");
             return false;
         }
     }

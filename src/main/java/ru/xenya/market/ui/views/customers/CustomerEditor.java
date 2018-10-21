@@ -3,10 +3,10 @@ package ru.xenya.market.ui.views.customers;
 import com.vaadin.flow.component.HasText;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.HtmlImport;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
-import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -35,6 +35,9 @@ public class CustomerEditor extends PolymerTemplate<TemplateModel> implements Cr
     private TextField address;
     @Id("phoneNumbers")
     private TextField phoneNumbers;
+
+//    @Id("ordersContainer")
+//    private Div ordersContainer;
 
 
 

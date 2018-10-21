@@ -25,60 +25,60 @@ import ru.xenya.market.ui.crud.CrudView;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-@SpringComponent
-@UIScope
-public class OrderForm extends PolymerTemplate<TemplateModel> implements CrudView.CrudForm<Order> {
-
-
-    private H2 title;
-
-    private Div metaContainer;
-    private Span orderNumber;
-    private ComboBox<OrderState> status;
-    @Id("dueDate")
-    private DatePicker dueDate;
-    @Id("payment")
-    private ComboBox<Payment> payment;
-    @Id("customerName")
-    private TextField customerName;
-    @Id("customerPhone")
-    private TextField customerPhone;
-    @Id("cancel")
-    private Button cancel;
-    @Id("review")
-    private Button review;
-    @Id("itemsContainer")
-    private Div itemsContainer;
-
-//    private OrderItemsEditor itemsEditor;
-    private User currentUser;
-
-    private Order currentOrder;
-
-//    public OrderForm(BiConsumer<Order, Operation> itemSaver, Consumer<Order> itemDeleter) {
-//        super("Заказ", itemSaver, itemDeleter);
-//    }
-
-
-
+//@SpringComponent
+//@UIScope
+//public class OrderForm extends PolymerTemplate<TemplateModel> implements CrudView.CrudForm<Order> {
 //
-//    @Override
-//    protected void confirmDelete() {
 //
-//    }
-
-    @Override
-    public FormButtonsBar getButtons() {
-        return null;
-    }
-
-    @Override
-    public HasText getTitle() {
-        return null;
-    }
-
-    @Override
-    public void setBinder(BeanValidationBinder<Order> binder) {
-
-    }
-}
+////    private H2 title;
+////
+////    private Div metaContainer;
+////    private Span orderNumber;
+////    private ComboBox<OrderState> status;
+////    @Id("dueDate")
+////    private DatePicker dueDate;
+////    @Id("payment")
+////    private ComboBox<Payment> payment;
+////    @Id("customerName")
+////    private TextField customerName;
+////    @Id("customerPhone")
+////    private TextField customerPhone;
+////    @Id("cancel")
+////    private Button cancel;
+////    @Id("review")
+////    private Button review;
+////    @Id("itemsContainer")
+////    private Div itemsContainer;
+////
+//////    private OrderItemsEditor itemsEditor;
+////    private User currentUser;
+////
+////    private Order currentOrder;
+////
+//////    public OrderForm(BiConsumer<Order, Operation> itemSaver, Consumer<Order> itemDeleter) {
+//////        super("Заказ", itemSaver, itemDeleter);
+//////    }
+////
+////
+////
+//////
+//////    @Override
+//////    protected void confirmDelete() {
+//////
+//////    }
+////
+////    @Override
+////    public FormButtonsBar getButtons() {
+////        return null;
+////    }
+////
+////    @Override
+////    public HasText getTitle() {
+////        return null;
+////    }
+////
+////    @Override
+////    public void setBinder(BeanValidationBinder<Order> binder) {
+////
+////    }
+//}

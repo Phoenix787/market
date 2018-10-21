@@ -2,6 +2,7 @@ package ru.xenya.market.ui.views.orderedit;
 
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasText;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -10,11 +11,13 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.validator.BeanValidator;
@@ -23,7 +26,10 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import ru.xenya.market.backend.data.OrderState;
+import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.Payment;
 import ru.xenya.market.backend.data.entity.User;
@@ -32,16 +38,19 @@ import ru.xenya.market.ui.crud.CrudView.CrudForm;
 import ru.xenya.market.ui.dataproviders.DataProviderUtils;
 import ru.xenya.market.ui.events.CancelEvent;
 import ru.xenya.market.ui.events.ReviewEvent;
+import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 
 //todo
+import java.util.stream.Stream;
+
 import static ru.xenya.market.ui.dataproviders.DataProviderUtils.createItemLabelGenerator;
 
 @Tag("order-editor")
 @HtmlImport("src/views/orderedit/order-editor.html")
 @SpringComponent
-@UIScope
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         implements CrudForm<Order> /*AbstractEditorDialog<Order>*/ {
 
@@ -71,23 +80,28 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private TextField customerName;
     @Id("customerPhone")
     private TextField customerPhone;
-//    @Id("cancel")
-//    private Button cancel;
-//    @Id("review")
-//    private Button review;
+    @Id("cancel")
+    private Button cancel;
+    @Id("save")
+    private Button review;
     @Id("itemsContainer")
     private Div itemsContainer;
 
-    @Id("buttons")
-    private FormButtonsBar buttons;
+//    @Id("buttons")
+//    private FormButtonsBar buttons;
 
 //    private OrderItemsEditor itemsEditor;
 
     private User currentUser;
     private Order currentOrder;
 
-    private Binder<Order> binder = new Binder<>(Order.class);
 
+
+    private Customer currentCustomer;
+
+    //private BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
+
+    private Binder<Order> binder = new Binder<>(Order.class);
     private LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
 
 
@@ -95,12 +109,12 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     @Autowired
     public OrderEditor() {
 
-//        itemsEditor = new OrderItemsEditor()
-//        itemsContainer.addClassName(itemsEditor);
-        customerName.setEnabled(false);
-        customerPhone.setEnabled(false);
-//        cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
-//        review.addClickListener(e -> fireEvent(new ReviewEvent(this)));
+////        itemsEditor = new OrderItemsEditor()
+////        itemsContainer.addClassName(itemsEditor);
+//        customerName.setEnabled(false);
+//        customerPhone.setEnabled(false);
+        cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
+        review.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
         status.setItemLabelGenerator(createItemLabelGenerator(OrderState::getDisplayName));
         status.setDataProvider(DataProvider.ofItems(OrderState.values()));
         status.addValueChangeListener(
@@ -113,8 +127,8 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
                 });
         dueDate.setRequired(true);
         binder.bind(dueDate, "dueDate");
-        //todo для поля дата установить валидатор
-
+//        //todo для поля дата установить валидатор
+//
         payment.setItemLabelGenerator(createItemLabelGenerator(Payment::name));
         payment.setDataProvider(DataProvider.ofItems(Payment.values()));
         binder.bind(payment, "payment");
@@ -128,13 +142,13 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             customerName.setValue(binder.getBean().getCustomer().getFullName());
             customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
         }
-
-
-
-//        itemsEditor.setRequiredIndicatorVisible(true);
-//        binder.bind(itemsEditor, "items");
-
-
+//
+//
+//
+////        itemsEditor.setRequiredIndicatorVisible(true);
+////        binder.bind(itemsEditor, "items");
+//
+//
 
     }
 
@@ -152,11 +166,13 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     }
 
     public void read(Order order, boolean isNew) {
+        order.setCustomer(currentCustomer);
         binder.readBean(order);
         this.orderNumber.setText(isNew ? "" : order.getId().toString());
 
         title.setVisible(isNew);
         metaContainer.setVisible(!isNew);
+        customerName.setValue(currentCustomer.getFullName());
 
         if (order.getOrderState() != null) {
             getModel().setStatus(order.getOrderState().name());
@@ -166,20 +182,20 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     }
 
     private void save(){
-
+        Notification.show("Save click");
     }
 
 
     public Binder<Order> getBinder() { return binder;}
 
-    //        Stream<HasValue<?, ?>> errorFields = binder.validate().getBeanValidationErrors().stream()
-    //                .map(BindingValidationStatus::getField);
+//    Stream<HasValue<?, ?>> errorFields = binder.validate().getBeanValidationErrors().stream()
+//                    .map(BindingValidationStatus::getField);
 //    public Stream<HasValue<?, ?>> validate() {
 //        return Stream.concat(errorFields, itemsEditor.validate());
-//    }
+ //   }
 
-    public Registration addReviewListener(ComponentEventListener<ReviewEvent> listener) {
-        return addListener(ReviewEvent.class, listener);
+    public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
+        return addListener(SaveEvent.class, listener);
     }
 
     public Registration addCancelListener(ComponentEventListener<CancelEvent> listener) {
@@ -204,7 +220,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     @Override
     public FormButtonsBar getButtons() {
-        return buttons;
+        return null;
     }
 
     @Override
@@ -214,8 +230,21 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     @Override
     public void setBinder(BeanValidationBinder<Order> binder) {
-       // this.binder = binder;
+        this.binder = binder;
     }
+
+    public void setCurrentCustomer(Customer currentCustomer) {
+        this.currentCustomer = currentCustomer;
+
+       // customerName.setValue(currentCustomer.getFullName());
+    }
+
+//    public boolean hasChanges() {
+//        return binder.hasChanges() /*|| itemsEditor.hasChanges()*/;
+//    }
+
+
+
 
     //    private DatePicker dueDate;
 //    private ComboBox<Payment> payment;

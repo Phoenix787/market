@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,7 +27,7 @@ public class Customer extends AbstractEntity {
     @OrderColumn
     @JoinColumn
   //  @NotEmpty
-    private Set<Order> orders;
+    private List<Order> orders;
 
     public Customer() {
     }
@@ -67,11 +68,11 @@ public class Customer extends AbstractEntity {
         this.phoneNumberForSMS = phoneNumberForSMS;
     }
 
-    public Set<Order> getOrders() {
+    public List<Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(Set<Order> orders) {
+    public void setOrders(List<Order> orders) {
         this.orders = orders;
     }
 }

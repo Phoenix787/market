@@ -9,6 +9,8 @@ import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.OrderRepository;
+import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
+import ru.xenya.market.ui.utils.converters.OrderStateConverter;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -19,6 +21,14 @@ import java.util.function.BiConsumer;
 public class OrderService implements FilterableCrudService<Order> {
 
     private OrderRepository orderRepository;
+    private Customer currentCustomer;
+
+    public void setCurrentCustomer(Customer currentCustomer) {
+        this.currentCustomer = currentCustomer;
+    }
+
+    LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
+    OrderStateConverter orderStateConverter = new OrderStateConverter();
 
     public OrderService(OrderRepository orderRepository) {
         super();
@@ -33,11 +43,22 @@ public class OrderService implements FilterableCrudService<Order> {
     public Order saveOrder(User currentUser, Long id, BiConsumer<User, Order> orderFiller) {
         Order order;
         if (id == null) {
-            order = new Order(currentUser);
+            order = new Order(currentCustomer, currentUser);
         } else {
             order = load(id);
         }
         orderFiller.accept(currentUser, order);
+        return orderRepository.save(order);
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public Order saveOrder(User currentUser, Customer currentCustomer, Long id) {
+        Order order;
+        if (id == null) {
+            order = new Order(currentCustomer, currentUser);
+        } else {
+            order = load(id);
+        }
         return orderRepository.save(order);
     }
 
@@ -74,7 +95,7 @@ public class OrderService implements FilterableCrudService<Order> {
     @Override
     @Transactional
     public Order createNew(User currentUser) {
-        Order order = new Order(currentUser);
+        Order order = new Order(currentCustomer, currentUser);
         order.setDueDate(LocalDate.now());
         return order;
     }
@@ -102,5 +123,27 @@ public class OrderService implements FilterableCrudService<Order> {
 
     public List<Order> findByCustomer(Customer currentCustomer) {
         return orderRepository.findByCustomer(currentCustomer);
+    }
+
+    public List<Order> findByCustomerAndDueDateOrOrderState(
+            Customer customer, String dueDateFilter, String orderState) {
+        if (dueDateFilter != null && !dueDateFilter.isEmpty()) {
+            if (orderState != null && !orderState.isEmpty()) {
+                return orderRepository.findByCustomerAndDueDateOrOrderState(
+                        customer, localDateToStringEncoder.decode(dueDateFilter),
+                        orderStateConverter.decode(orderState));
+
+            } else {
+                return orderRepository.findByCustomerAndDueDate(customer,
+                        localDateToStringEncoder.decode(dueDateFilter));
+            }
+
+        }  else if(dueDateFilter == null && (orderState != null && !orderState.isEmpty())){
+
+                return orderRepository.findByCustomerAndOrderState(customer,
+                                                    orderStateConverter.decode(orderState));
+
+        }
+        return orderRepository.findByCustomer(customer);
     }
 }

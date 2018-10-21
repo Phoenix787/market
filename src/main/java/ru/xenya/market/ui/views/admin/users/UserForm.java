@@ -15,8 +15,8 @@ import ru.xenya.market.ui.components.common.AbstractEditorDialog;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-@SpringComponent
-@UIScope
+//@SpringComponent
+//@UIScope
 public class UserForm extends AbstractEditorDialog<User> {
 
     private H3 title;

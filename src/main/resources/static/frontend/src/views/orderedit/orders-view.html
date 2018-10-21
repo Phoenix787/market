@@ -2,24 +2,21 @@
 <link rel="import" href="../../../bower_components/vaadin-grid/src/vaadin-grid.html">
 <link rel="import" href="../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
 
-<link rel="import" href="../../components/search-bar.html">
 <link rel="import" href="../../components/utils-mixin.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<dom-module id="orders-view-of-customer">
+<dom-module>
     <template>
-        <style include="shared-styles">
+        <style>
 
         </style>
-        <vaadin-text-field id="text"></vaadin-text-field>
-        <search-bar id="search"></search-bar>
         <vaadin-grid id="grid"></vaadin-grid>
     </template>
     <script>
-        class OrdersViewOdCustomer extends Polymer.Element {
+        class OrdersView extends Polymer.Element {
             static get is(){
-                return 'orders-view-of-customer';
+                return 'orders-view';
             }
             ready() {
                 super.ready();
@@ -40,7 +37,7 @@
             }
         }
 
-        customElements.define(OrdersViewOdCustomer.is, OrdersViewOdCustomer);
+        customElements.define(OrdersView.is, OrdersView);
     </script>
 
 </dom-module>
