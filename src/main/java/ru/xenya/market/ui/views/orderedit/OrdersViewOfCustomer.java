@@ -58,8 +58,6 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
         presenter.setView(this);
         presenter.init(form);
 
-
-
         setupGrid();
         setupEventListeners();
        // getSearchBar().addActionClickListener(e->presenter.createNewOrder());
@@ -103,9 +101,7 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
 
 
     @Override
-    protected String getBasePage() {
-        return MarketConst.PAGE_STOREFRONT;
-    }
+    protected String getBasePage() { return MarketConst.PAGE_STOREFRONT; }
 
     @Override
     public BeanValidationBinder<Order> getBinder() {
@@ -136,7 +132,9 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
     public void setupEventListeners() {
         getGrid().addSelectionListener(e->{
             e.getFirstSelectedItem().ifPresent(entity->{
-                navigateToEntity(entity.getId().toString());
+                System.err.println(entity);
+                getPresenter().load(entity);
+                //navigateToEntity(entity.getId().toString());
                 getGrid().deselectAll();
             });
         });
@@ -146,22 +144,20 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
 
         getDialog().getElement().addEventListener("opened-changed", e->{
             if (!getDialog().isOpened()) {
-                getPresenter().cancel();
+              //  getPresenter().cancel();
             }
         });
-
-
-
-      //  getForm().getButtons().addDeleteListener(e -> getPresenter().delete());
+//        getForm().getButtons().addDeleteListener(e -> getPresenter().delete());
 
         getSearchBar().addActionClickListener(e -> getPresenter().createNewOrder());
         getSearchBar().addFilterChangeListener(e->getPresenter().filter(getSearchBar().getFilter()));
         getSearchBar().setActionText("New " + EntityUtil.getName(Order.class));
-     //   getBinder().addValueChangeListener(e -> getPresenter().onValueChange(isDirty()));
+       // getBinder().addValueChangeListener(e -> getPresenter().onValueChange(isDirty()));
     }
 
     public void navigateToEntity(String id) {
         getUI().ifPresent(ui-> ui.navigate(TemplateUtils.generateLocation(getBasePage(), id)));
+
     }
 
     public OrderEditor getOpenedOrderEditor() {

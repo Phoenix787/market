@@ -48,13 +48,8 @@ public class CustomerViewTemplate extends CrudView<Customer, TemplateModel>/**/ 
 
     private ConfirmationDialog<Customer> confirmation;
 
-    //    private final OrderEditor orderEditor;
-//
-//    private final OrderPresenter orderPresenter;
-//
-    private final CrudEntityPresenter<Customer> customerPresenter;
 
-    // private final CustomerEditor customerEditor;
+    private final CrudEntityPresenter<Customer> customerPresenter;
 
     private final OrdersViewOfCustomer ordersView;
 
@@ -97,6 +92,7 @@ public class CustomerViewTemplate extends CrudView<Customer, TemplateModel>/**/ 
         Button button = new Button("Заказы", VaadinIcon.CHECK.create());
         button.addClickListener(e -> {
             ordersView.open(customer);
+          //  getUI().ifPresent(ui -> ui.navigate(MarketConst.PAGE_STOREFRONT));
             dialog.add(ordersView);
            dialog.open();
         });

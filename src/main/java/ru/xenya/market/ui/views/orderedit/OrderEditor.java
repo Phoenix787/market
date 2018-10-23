@@ -64,7 +64,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     @Override
     public ConfirmationDialog getConfirmDialog() {
-        return null;
+        return ;
     }
 
     public interface Model extends TemplateModel{
@@ -188,7 +188,10 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     }
 
     public void read(Order order, boolean isNew) {
-        order.setCustomer(currentCustomer);
+        if (isNew) {
+            order.setCustomer(currentCustomer);
+        }
+
         getBinder().setBean(order);
         System.err.println("from orderEditor->read: " + order);
       //  binder.readBean(order);

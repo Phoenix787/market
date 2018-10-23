@@ -97,7 +97,23 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
         open(entityPresenter.createNew(), true);
     }
 
-    private void open(Order order, boolean edit) {
+    public void load(Order order){
+        System.err.println("from load of OrderPresenter: # order " + order.getId());
+        System.err.println("from load of OrderPresenter: " + loadEntity(order.getId(), this::open));
+    }
+
+    public Order open(Order entity){
+        System.err.println("from OrderPresenter-> open()" + entity);
+       // view.getBinder().readBean(entity);
+        view.getForm().read(entity, false);
+        view.updateTitle(false);
+        view.openDialog();
+//        view.getDialog().add(view.getForm());
+//        view.getDialog().open();
+
+        return entity;
+    }
+    public void open(Order order, boolean edit) {
         if (edit) {
 
 //            view.getForm().read(order, true /*entityPresenter.isNew()*/);
@@ -108,11 +124,16 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
        }
     }
 
+    public EntityPresenter<Order, OrderEditor> getEntityPresenter() {
+        return entityPresenter;
+    }
+
     public void save() {
-//todo проверить создание и сохранение нового заказа, сохранение редактированного
+//todo сохранение редактированного
         currentOrder = entityPresenter.getEntity();
         //Order order = view.getForm().getBinder().getBean();
-            Notification.show("" + currentOrder);
+
+        System.err.println("from save currentOrder = entityPresenter.getEntity() " + entityPresenter.getEntity());
         try {
             view.write(currentOrder);
         } catch (ValidationException e) {
