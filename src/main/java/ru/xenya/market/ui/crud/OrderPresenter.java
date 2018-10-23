@@ -1,5 +1,6 @@
 package ru.xenya.market.ui.crud;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -9,6 +10,7 @@ import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.service.OrderService;
+import ru.xenya.market.ui.utils.MarketConst;
 import ru.xenya.market.ui.views.orderedit.OrderEditor;
 import ru.xenya.market.ui.views.orderedit.OrdersViewOfCustomer;
 
@@ -21,14 +23,14 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
 
     private OrdersViewOfCustomer view;
 
-    private final EntityPresenter<Order, OrderEditor> entityPresenter;
+    private final EntityPresenter<Order, OrdersViewOfCustomer> entityPresenter;
 //    private final OrdersGridDataProvider dataProvider;
     private final User currentUser;
     private final OrderService orderService;
     private Customer currentCustomer;
     private Order currentOrder;
 
-    public OrderPresenter(EntityPresenter<Order, OrderEditor> entityPresenter,
+    public OrderPresenter(EntityPresenter<Order, OrdersViewOfCustomer> entityPresenter,
                           OrderService orderService, User currentUser) {
         super(orderService, currentUser);
         this.entityPresenter = entityPresenter;
@@ -46,7 +48,8 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
     }
 
 
-    public void init(OrderEditor view) {
+    public void init(OrdersViewOfCustomer view) {
+        this.view = view;
         this.entityPresenter.setView(view);
         this.view.getGrid().setItems(updateList());
         this.view.getOpenedOrderEditor().setCurrentUser(currentUser);
@@ -61,6 +64,28 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
 //        view.getOpenedOrderDetails().addCommentListener(e -> addComment(e.getMessage()));
     }
 
+    public void onNavigation(Long id, boolean edit) {
+        entityPresenter.loadEntity(id, e -> open(e, edit));
+    }
+
+    public void createNewOrder(){
+        open(entityPresenter.createNew(), true);
+    }
+
+    @Override
+    public void cancel() {
+        //todo проверку на несохраненные данные
+        entityPresenter.cancel(() -> close(), () -> view.setOpened(true));
+        //view.getDialog().close();
+    }
+
+    void edit() {
+        UI.getCurrent().navigate(MarketConst.PAGE_STOREFRONT + "/" + entityPresenter.getEntity().getId());
+    }
+
+    void back() {
+        view.setDialogElementsVisibility(true);
+    }
 
     public List<Order> updateList() {
         return orderService.findByCustomer(currentCustomer);
@@ -93,15 +118,10 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
         return /*orderService.createNew(currentUser)*/  order;
     }
 
-    public void createNewOrder(){
-        open(entityPresenter.createNew(), true);
-    }
-
     public void load(Order order){
         System.err.println("from load of OrderPresenter: # order " + order.getId());
         System.err.println("from load of OrderPresenter: " + loadEntity(order.getId(), this::open));
     }
-
     public Order open(Order entity){
         System.err.println("from OrderPresenter-> open()" + entity);
        // view.getBinder().readBean(entity);
@@ -113,18 +133,19 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
 
         return entity;
     }
-    public void open(Order order, boolean edit) {
-        if (edit) {
 
-//            view.getForm().read(order, true /*entityPresenter.isNew()*/);
-            view.getForm().read(order, entityPresenter.isNew());
-            view.getDialog().add(view.getForm());
-            view.getDialog().open();
+    public void open(Order order, boolean edit) {
+        view.setDialogElementsVisibility(edit);
+        view.setOpened(true);
+        if (edit) {
+            view.getOpenedOrderEditor().read(order, entityPresenter.isNew());
+          //  view.getDialog().add(view.getForm());
+         //   view.getDialog().open();
 
        }
     }
 
-    public EntityPresenter<Order, OrderEditor> getEntityPresenter() {
+    public EntityPresenter<Order, OrdersViewOfCustomer> getEntityPresenter() {
         return entityPresenter;
     }
 
@@ -148,7 +169,7 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
                     view.getGrid().setItems(updateList());
                 }
 
-                closeSilently();
+                close();
             });
 
 //       orderService.saveOrder(order);
@@ -171,13 +192,6 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
         updateList(currentCustomer, filter);
     }
 
-    @Override
-    public void cancel() {
-        //todo проверку на несохраненные данные
-        entityPresenter.cancel(() -> close(), () -> view.setOpened(true));
-        //view.getDialog().close();
-    }
-
     public void delete(){
         super.delete(e->{
             getView().showDeleteNotification();
@@ -185,10 +199,7 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
             closeSilently();
         });
     }
-    //    public  void cancel(){
-    //        cancel(this::closeSilently, getView()::openDialog);
-//    }
-//
+
     public void close() {
         view.getOpenedOrderEditor().close();
         view.setOpened(false);
@@ -199,7 +210,8 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
     public void closeSilently() {
        // close();
        //getView().closeDialog();
-        close();
+//        close();
+        entityPresenter.close();
         view.getDialog().close();
     }
     //}

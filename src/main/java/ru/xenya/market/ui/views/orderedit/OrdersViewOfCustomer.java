@@ -1,11 +1,15 @@
 package ru.xenya.market.ui.views.orderedit;
 
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -48,20 +52,20 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
 
 //    private OrderEditor form;
 
-    private final BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
+  //  private final BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
 
     @Autowired
     public OrdersViewOfCustomer(OrderPresenter presenter, OrderEditor form) {
         super(EntityUtil.getName(Order.class), form);
         this.presenter = presenter;
       //  this.form = form;
-        presenter.setView(this);
-        presenter.init(form);
+     //   presenter.setView(this);
+        presenter.init(this);
 
         setupGrid();
         setupEventListeners();
        // getSearchBar().addActionClickListener(e->presenter.createNewOrder());
-        form.setBinder(binder);
+      //  form.setBinder(binder);
     }
 
 
@@ -105,7 +109,7 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
 
     @Override
     public BeanValidationBinder<Order> getBinder() {
-        return binder;
+        return null;
     }
 
     @Override
@@ -123,17 +127,46 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
         return (OrderEditor) super.getForm();
     }
 
-    //    void setDialogElementsVisibility(boolean editing) {
-//        dialog.add(editing ? orderEditor : orderDetails);
-//        orderEditor.setVisible(editing);
-//        orderDetails.setVisible(!editing);
-//    }
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter Long orderId) {
+        boolean editView = event.getLocation().getPath().contains(MarketConst.PAGE_STOREFRONT_EDIT);
+        if (orderId != null) {
+//            presenter.onNavigation(orderId, editView);
+            presenter.loadEntity(orderId);
+        } else if (getDialog().isOpened()) {
+            presenter.closeSilently();
+        }
+    }
+    public void navigateToMainView() {
+        getUI().ifPresent(ui -> ui.navigate(MarketConst.PAGE_CUSTOMERS));
+    }
+
+
+    @Override
+    public boolean isDirty() {
+        return getForm().hasChanges();
+    }
+
+    @Override
+    public void write(Order entity) throws ValidationException {
+        getForm().write(entity);
+
+    }
+
+    public void setDialogElementsVisibility(boolean editing) {
+        //dialog.add(editing ? orderEditor : orderDetails);
+        getForm().setVisible(editing);
+       // orderDetails.setVisible(!editing);
+    }
 
     public void setupEventListeners() {
         getGrid().addSelectionListener(e->{
             e.getFirstSelectedItem().ifPresent(entity->{
                 System.err.println(entity);
-                getPresenter().load(entity);
+
+                presenter.onNavigation(entity.getId(), true); //load(entity);
+                //UI.getCurrent().navigate(MarketConst.PAGE_STOREFRONT + "/" + entity.getId());
+//                getPresenter().load(entity);
                 //navigateToEntity(entity.getId().toString());
                 getGrid().deselectAll();
             });
@@ -167,7 +200,5 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
     public void setOpened(boolean isOpened) {
         getDialog().setOpened(isOpened);
     }
-    public void navigateToMainView() {
-        getUI().ifPresent(ui -> ui.navigate(MarketConst.PAGE_CUSTOMERS));
-    }
+
 }

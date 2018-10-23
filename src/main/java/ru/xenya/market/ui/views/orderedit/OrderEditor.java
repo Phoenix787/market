@@ -54,18 +54,10 @@ import static ru.xenya.market.ui.dataproviders.DataProviderUtils.createItemLabel
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
-        implements CrudForm<Order>, EntityView<Order> /*AbstractEditorDialog<Order>*/ {
+        implements CrudForm<Order> /*AbstractEditorDialog<Order>*/ {
 
 
-    @Override
-    public void setConfirmDialog(ConfirmationDialog<Order> confirmDialog) {
 
-    }
-
-    @Override
-    public ConfirmationDialog getConfirmDialog() {
-        return ;
-    }
 
     public interface Model extends TemplateModel{
         void setTotalPrice(String totalPrice);
@@ -105,14 +97,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     private User currentUser;
     private Order currentOrder;
-
-
-
     private Customer currentCustomer;
 
-    private BeanValidationBinder<Order> binder;
-
-//    private Binder<Order> binder = new Binder<>(Order.class);
+    private BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
     private LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
 
 
@@ -130,6 +117,29 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         status.setDataProvider(DataProvider.ofItems(OrderState.values()));
         status.addValueChangeListener(
                 e->getModel().setStatus(DataProviderUtils.convertIfNotNull(e.getValue(), OrderState::name)));
+
+        binder.forField(status)
+                .withValidator(new BeanValidator(Order.class, "orderState"))
+                .bind(Order::getOrderState, (o, s)->{
+                    o.changeState(currentUser, s);
+                });
+        dueDate.setRequired(true);
+        binder.bind(dueDate, "dueDate");
+//        //todo для поля дата установить валидатор
+//
+        payment.setItemLabelGenerator(createItemLabelGenerator(Payment::name));
+        payment.setDataProvider(DataProvider.ofItems(Payment.values()));
+        binder.bind(payment, "payment");
+        payment.setRequired(true);
+
+        binder.bind(customerName, "customer.fullName");
+        binder.bind(customerPhone, "customer.phoneNumbers");
+
+        if (currentOrder != null) {
+
+            customerName.setValue(binder.getBean().getCustomer().getFullName());
+            customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
+        }
 
 //        binder.forField(status)
 //                .withValidator(new BeanValidator(Order.class, "orderState"))
@@ -163,36 +173,26 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     }
 
-    @Override
-    public boolean isDirty() {
-        return getBinder().hasChanges();
-    }
-
-    @Override
-    public void clear(){
-        getBinder().readBean(null);
-//        itemsEditor.setValue(null);
-    }
 
     public void close(){
         setTotalPrice(0);
     }
 
-    public void write(Order order) throws ValidationException {
-        getBinder().writeBean(order);
+    public boolean hasChanges() {
+        return binder.hasChanges();
     }
 
-    @Override
-    public String getEntityName() {
-        return null;
+    public void write(Order order) throws ValidationException {
+        binder.writeBean(order);
     }
+
 
     public void read(Order order, boolean isNew) {
         if (isNew) {
             order.setCustomer(currentCustomer);
         }
 
-        getBinder().setBean(order);
+        binder.setBean(order);
         System.err.println("from orderEditor->read: " + order);
       //  binder.readBean(order);
         this.orderNumber.setText(isNew ? "" : order.getId().toString());
@@ -214,7 +214,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     }
 
 
-    public Binder<Order> getBinder() { return binder;}
+    //public Binder<Order> getBinder() { return binder;}
 
 //    Stream<HasValue<?, ?>> errorFields = binder.validate().getBeanValidationErrors().stream()
 //                    .map(BindingValidationStatus::getField);
@@ -242,9 +242,9 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         this.currentOrder = currentOrder;
     }
 
-    private boolean hasChanges(){
-        return getBinder().hasChanges();     // itemEditor.hasChanges();
-    }
+//    private boolean hasChanges(){
+//        return getBinder().hasChanges();     // itemEditor.hasChanges();
+//    }
 
     @Override
     public FormButtonsBar getButtons() {
@@ -258,24 +258,22 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
 
     @Override
     public void setBinder(BeanValidationBinder<Order> binder) {
-        this.binder = binder;
-
-        this.binder.forField(status)
+       binder.forField(status)
                 .withValidator(new BeanValidator(Order.class, "orderState"))
                 .bind(Order::getOrderState, (o, s)->{
                     o.changeState(currentUser, s);
                 });
         dueDate.setRequired(true);
-        this.binder.bind(dueDate, "dueDate");
+        binder.bind(dueDate, "dueDate");
 //        //todo для поля дата установить валидатор
 //
         payment.setItemLabelGenerator(createItemLabelGenerator(Payment::name));
         payment.setDataProvider(DataProvider.ofItems(Payment.values()));
-        this.binder.bind(payment, "payment");
+        binder.bind(payment, "payment");
         payment.setRequired(true);
 
-        this.binder.bind(customerName, "customer.fullName");
-        this.binder.bind(customerPhone, "customer.phoneNumbers");
+        binder.bind(customerName, "customer.fullName");
+        binder.bind(customerPhone, "customer.phoneNumbers");
 
         if (currentOrder != null) {
 
