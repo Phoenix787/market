@@ -88,6 +88,7 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
     }
 
     public List<Order> updateList() {
+
         return orderService.findByCustomer(currentCustomer);
     }
 
@@ -118,10 +119,10 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
         return /*orderService.createNew(currentUser)*/  order;
     }
 
-    public void load(Order order){
-        System.err.println("from load of OrderPresenter: # order " + order.getId());
-        System.err.println("from load of OrderPresenter: " + loadEntity(order.getId(), this::open));
-    }
+//    public void load(Order order){
+//        System.err.println("from load of OrderPresenter: # order " + order.getId());
+//        System.err.println("from load of OrderPresenter: " + loadEntity(order.getId(), this::open));
+//    }
     public Order open(Order entity){
         System.err.println("from OrderPresenter-> open()" + entity);
        // view.getBinder().readBean(entity);
@@ -150,7 +151,6 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
     }
 
     public void save() {
-//todo сохранение редактированного
         currentOrder = entityPresenter.getEntity();
         //Order order = view.getForm().getBinder().getBean();
 
@@ -201,8 +201,8 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
     }
 
     public void close() {
-        view.getOpenedOrderEditor().close();
         view.setOpened(false);
+        view.getOpenedOrderEditor().close();
         view.navigateToMainView();
         entityPresenter.close();
     }

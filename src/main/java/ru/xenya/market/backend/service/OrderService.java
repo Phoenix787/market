@@ -17,6 +17,8 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class OrderService implements FilterableCrudService<Order> {
@@ -154,4 +156,26 @@ public class OrderService implements FilterableCrudService<Order> {
         }
         return orderRepository.findByCustomer(customer);
     }
+
+
+    /**
+     * это используется для упрощения строки поиска в reviewList
+     */
+//    public List<Review> findReviews(String filter) {
+//        String normalizedFilter = filter.toLowerCase();
+//        return reviews.values().stream().filter(
+//                review -> filterTextOf(review).contains(normalizedFilter))
+//                .sorted(((o1, o2) -> o1.getId().compareTo(o2.getId())))
+//                .collect(Collectors.toList());
+//    }
+//
+//    private String filterTextOf(Review review){
+//        LocalDateToStringConverter dateConverter = new LocalDateToStringConverter();
+//        String filterableText = Stream.of(review.getName(), review.getCategory() == null ? StaticData.UNDEFINED :
+//                        review.getCategory().getName(), String.valueOf(review.getScore()),
+//                String.valueOf(review.getCount()),
+//                dateConverter.encode(review.getDate()))
+//                .collect(Collectors.joining("\t"));
+//        return filterableText.toLowerCase();
+//    }
 }

@@ -103,7 +103,7 @@ public class EntityPresenter<T extends AbstractEntity, V extends EntityView<T>> 
 
     public void close() {
         state.clear();
-       // view.clear();
+        view.clear();
     }
 
 

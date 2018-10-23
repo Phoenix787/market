@@ -14,6 +14,7 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 @Tag("search-bar")
 @HtmlImport("src/components/search-bar.html")
 public class SearchBar extends PolymerTemplate<SearchBar.Model> {
+
     public interface Model extends TemplateModel {
         boolean isCheckBoxChecked();
 

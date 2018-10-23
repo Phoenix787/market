@@ -8,11 +8,13 @@ import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import com.vaadin.flow.templatemodel.Encode;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.xenya.market.backend.data.entity.Customer;
@@ -25,6 +27,17 @@ import ru.xenya.market.ui.crud.CrudView;
 import ru.xenya.market.ui.crud.OrderPresenter;
 import ru.xenya.market.ui.utils.MarketConst;
 import ru.xenya.market.ui.utils.TemplateUtils;
+import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
+import ru.xenya.market.ui.utils.converters.LongToStringEncoder;
+import ru.xenya.market.ui.utils.converters.OrderStateConverter;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.List;
+
+//todo строка поиска по дате нужно или нет? пока что не работает парсер. как сделать чтобы поиск по строке происходил по энтеру
+//todo попробовать сделать страницу похожую на reviewList в buddyApp
 
 @Tag("orders-view-of-customer")
 @Route(value = MarketConst.PAGE_STOREFRONT, layout = MainView.class)
@@ -32,6 +45,8 @@ import ru.xenya.market.ui.utils.TemplateUtils;
 @SpringComponent
 @UIScope
 public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
+
+
 
     @Id("text")
     private TextField text;
@@ -80,7 +95,8 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
       //  grid.setItems(presenter.updateList());
         grid.setHeight("100vh");
         grid.addColumn(Order::getId).setWidth("50px").setFlexGrow(0);
-        grid.addColumn(Order::getDueDate).setWidth("250px").setHeader("Дата заказа").setFlexGrow(5);
+        grid.addColumn(new LocalDateRenderer<>(Order::getDueDate,
+                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Дата заказа").setFlexGrow(5);
         grid.addColumn(Order::getOrderState).setWidth("200px").setHeader("Статус").setFlexGrow(5);
         grid.addColumn(Order::getPayment).setWidth("250px").setFlexGrow(5);
 //        grid.addColumn(new ComponentRenderer<>(this::createEditButton)).setFlexGrow(2);
@@ -183,7 +199,7 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
 //        getForm().getButtons().addDeleteListener(e -> getPresenter().delete());
 
         getSearchBar().addActionClickListener(e -> getPresenter().createNewOrder());
-        getSearchBar().addFilterChangeListener(e->getPresenter().filter(getSearchBar().getFilter()));
+        getSearchBar().addFilterChangeListener(e->getPresenter().filter(getSearchBar().getFilter())); //todo вставить метод типа findReviews
         getSearchBar().setActionText("New " + EntityUtil.getName(Order.class));
        // getBinder().addValueChangeListener(e -> getPresenter().onValueChange(isDirty()));
     }
@@ -201,4 +217,8 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
         getDialog().setOpened(isOpened);
     }
 
+    @Override
+    public void clear() {
+        getForm().clear();
+    }
 }

@@ -100,6 +100,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
     private Customer currentCustomer;
 
     private BeanValidationBinder<Order> binder = new BeanValidationBinder<>(Order.class);
+
     private LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
 
 
@@ -286,6 +287,11 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         this.currentCustomer = currentCustomer;
 
        // customerName.setValue(currentCustomer.getFullName());
+    }
+
+    public void clear() {
+        binder.readBean(null);
+//        itemsEditor.setValue(null);
     }
 
 //    public boolean hasChanges() {
