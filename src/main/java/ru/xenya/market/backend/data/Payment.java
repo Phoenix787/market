@@ -1,4 +1,4 @@
-package ru.xenya.market.backend.data.entity;
+package ru.xenya.market.backend.data;
 
 public enum Payment {
     CASH{

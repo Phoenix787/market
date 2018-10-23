@@ -3,11 +3,10 @@ package ru.xenya.market.backend.data.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import ru.xenya.market.backend.data.OrderState;
+import ru.xenya.market.backend.data.Payment;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 

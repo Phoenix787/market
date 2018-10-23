@@ -2,7 +2,6 @@ package ru.xenya.market.ui.views.orderedit;
 
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasText;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -16,14 +15,11 @@ import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.validator.BeanValidator;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -31,21 +27,17 @@ import org.springframework.context.annotation.Scope;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
-import ru.xenya.market.backend.data.entity.Payment;
+import ru.xenya.market.backend.data.Payment;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.ui.components.FormButtonsBar;
-import ru.xenya.market.ui.components.common.ConfirmationDialog;
 import ru.xenya.market.ui.crud.CrudView.CrudForm;
 import ru.xenya.market.ui.dataproviders.DataProviderUtils;
 import ru.xenya.market.ui.events.CancelEvent;
-import ru.xenya.market.ui.events.ReviewEvent;
 import ru.xenya.market.ui.events.SaveEvent;
 import ru.xenya.market.ui.utils.FormattingUtils;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
-import ru.xenya.market.ui.views.EntityView;
 
 //todo
-import java.util.stream.Stream;
 
 import static ru.xenya.market.ui.dataproviders.DataProviderUtils.createItemLabelGenerator;
 
@@ -117,7 +109,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         status.setItemLabelGenerator(createItemLabelGenerator(OrderState::getDisplayName));
         status.setDataProvider(DataProvider.ofItems(OrderState.values()));
         status.addValueChangeListener(
-                e->getModel().setStatus(DataProviderUtils.convertIfNotNull(e.getValue(), OrderState::name)));
+                e->getModel().setStatus(DataProviderUtils.convertIfNotNull(e.getValue(), OrderState::toString)));
 
         binder.forField(status)
                 .withValidator(new BeanValidator(Order.class, "orderState"))
@@ -128,7 +120,7 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
         binder.bind(dueDate, "dueDate");
 //        //todo для поля дата установить валидатор
 //
-        payment.setItemLabelGenerator(createItemLabelGenerator(Payment::name));
+        payment.setItemLabelGenerator(createItemLabelGenerator(Payment::toString));
         payment.setDataProvider(DataProvider.ofItems(Payment.values()));
         binder.bind(payment, "payment");
         payment.setRequired(true);

@@ -2,12 +2,10 @@ package ru.xenya.market.backend.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import ru.xenya.market.backend.data.OrderState;
 import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
-import ru.xenya.market.backend.data.entity.Payment;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.OrderRepository;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
@@ -17,8 +15,6 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class OrderService implements FilterableCrudService<Order> {
