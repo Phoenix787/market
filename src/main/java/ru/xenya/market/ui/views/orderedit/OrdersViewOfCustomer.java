@@ -2,6 +2,8 @@ package ru.xenya.market.ui.views.orderedit;
 
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.polymertemplate.Id;
@@ -54,6 +56,12 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
     @Id("search")
     private SearchBar searchBar;
 
+//    @Id("date")
+//    private DatePicker date;
+//
+//    @Id("add")
+//    private Button addOrderBtn;
+
     @Id("grid")
     private Grid<Order> grid;
 
@@ -74,7 +82,7 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
         super(EntityUtil.getName(Order.class), form);
         this.presenter = presenter;
       //  this.form = form;
-     //   presenter.setView(this);
+//        presenter.setView(this);
         presenter.init(this);
 
         setupGrid();
@@ -92,17 +100,47 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
     }
 
     private void setupGrid() {
-      //  grid.setItems(presenter.updateList());
+        LocalDateToStringEncoder dateConverter = new LocalDateToStringEncoder();
         grid.setHeight("100vh");
         grid.addColumn(Order::getId).setWidth("50px").setFlexGrow(0);
         grid.addColumn(new LocalDateRenderer<>(Order::getDueDate,
                 DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))).setHeader("Дата заказа").setFlexGrow(5);
-        grid.addColumn(Order::getOrderState).setWidth("200px").setHeader("Статус").setFlexGrow(5);
-        grid.addColumn(Order::getPayment).setWidth("250px").setFlexGrow(5);
+        grid.addColumn(Order::getOrderState).setWidth("150px").setHeader("Статус").setFlexGrow(5);
+        grid.addColumn(Order::getPayment).setWidth("150px").setHeader("Форма оплаты").setFlexGrow(5);
 //        grid.addColumn(new ComponentRenderer<>(this::createEditButton)).setFlexGrow(2);
 //        grid.addColumn(new ComponentRenderer<>(this::openOrdersButton)).setFlexGrow(2);
     }
 
+    public void setupEventListeners() {
+        getGrid().addSelectionListener(e->{
+            e.getFirstSelectedItem().ifPresent(entity->{
+                System.err.println(entity);
+
+                presenter.onNavigation(entity.getId(), true); //load(entity);
+                //UI.getCurrent().navigate(MarketConst.PAGE_STOREFRONT + "/" + entity.getId());
+//                getPresenter().load(entity);
+                //navigateToEntity(entity.getId().toString());
+                getGrid().deselectAll();
+            });
+        });
+
+        //   getForm().getButtons().addSaveListener(e -> getPresenter().save());
+        //   getForm().getButtons().addCancelListener(e -> getPresenter().cancel());
+
+        getDialog().getElement().addEventListener("opened-changed", e->{
+            if (!getDialog().isOpened()) {
+                //  getPresenter().cancel();
+            }
+        });
+
+//        date.addValueChangeListener(e->getPresenter().filter(e.getValue()));
+//        getForm().getButtons().addDeleteListener(e -> getPresenter().delete());
+
+       getSearchBar().addActionClickListener(e -> getPresenter().createNewOrder());
+       getSearchBar().addFilterChangeListener(e->getPresenter().filter(getSearchBar().getFilter()));
+        getSearchBar().setActionText("New " + EntityUtil.getName(Order.class));
+        // getBinder().addValueChangeListener(e -> getPresenter().onValueChange(isDirty()));
+    }
 
 
     public void setCurrentCustomer(Customer currentCustomer) {
@@ -169,39 +207,12 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
 
     }
 
+
+
     public void setDialogElementsVisibility(boolean editing) {
         //dialog.add(editing ? orderEditor : orderDetails);
         getForm().setVisible(editing);
        // orderDetails.setVisible(!editing);
-    }
-
-    public void setupEventListeners() {
-        getGrid().addSelectionListener(e->{
-            e.getFirstSelectedItem().ifPresent(entity->{
-                System.err.println(entity);
-
-                presenter.onNavigation(entity.getId(), true); //load(entity);
-                //UI.getCurrent().navigate(MarketConst.PAGE_STOREFRONT + "/" + entity.getId());
-//                getPresenter().load(entity);
-                //navigateToEntity(entity.getId().toString());
-                getGrid().deselectAll();
-            });
-        });
-
-     //   getForm().getButtons().addSaveListener(e -> getPresenter().save());
-     //   getForm().getButtons().addCancelListener(e -> getPresenter().cancel());
-
-        getDialog().getElement().addEventListener("opened-changed", e->{
-            if (!getDialog().isOpened()) {
-              //  getPresenter().cancel();
-            }
-        });
-//        getForm().getButtons().addDeleteListener(e -> getPresenter().delete());
-
-        getSearchBar().addActionClickListener(e -> getPresenter().createNewOrder());
-        getSearchBar().addFilterChangeListener(e->getPresenter().filter(getSearchBar().getFilter())); //todo вставить метод типа findReviews
-        getSearchBar().setActionText("New " + EntityUtil.getName(Order.class));
-       // getBinder().addValueChangeListener(e -> getPresenter().onValueChange(isDirty()));
     }
 
     public void navigateToEntity(String id) {

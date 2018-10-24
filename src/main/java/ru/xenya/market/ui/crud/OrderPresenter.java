@@ -11,9 +11,12 @@ import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.service.OrderService;
 import ru.xenya.market.ui.utils.MarketConst;
+import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
+import ru.xenya.market.ui.utils.converters.OrderStateConverter;
 import ru.xenya.market.ui.views.orderedit.OrderEditor;
 import ru.xenya.market.ui.views.orderedit.OrdersViewOfCustomer;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -91,10 +94,26 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
 
         return orderService.findByCustomer(currentCustomer);
     }
+    public void filter(LocalDate filter) {
+        if (filter != null)
+            view.getGrid().setItems(orderService.findOrders(currentCustomer, filter));
+        else view.getGrid().setItems(updateList());
+        //updateList(currentCustomer, filter);
+    }
 
-    public List<Order> updateList(Customer currentCustomer, String filter) {
-        if (filter != null && !filter.isEmpty()) {
-            return orderService.findByCustomerAndDueDateOrOrderState(currentCustomer, filter, filter);
+    public void filter(String filter) {
+            if (filter != null && !filter.isEmpty()){
+                System.out.println("===========================================================\n\nfrom filter(string) and filter not empty\n\n");
+              view.getGrid().setItems(updateList(filter));
+            } else {
+                System.out.println("============================================================\n\nfrom filter(string) and filter emptyn\n\n");
+                view.getGrid().setItems(updateList());
+            }
+    }
+
+    public List<Order> updateList(String filter) {
+        if (filter != null ) {
+            return orderService.findOrdersByStateOrPayment(currentCustomer, filter);
         } else {
             return orderService.findByCustomer(currentCustomer);
         }
@@ -188,9 +207,7 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
 //        }
     }
 
-    public void filter(String filter) {
-        updateList(currentCustomer, filter);
-    }
+
 
     public void delete(){
         super.delete(e->{

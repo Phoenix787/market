@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.xenya.market.backend.data.OrderState;
+import ru.xenya.market.backend.data.Payment;
 import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
 
@@ -22,6 +23,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findByCustomer(Customer customer, Pageable pageable);
 
     Page<Order> findByCustomerFullNameContainingIgnoreCaseAndDueDateAfter(String searchQuery, LocalDate dueDate, Pageable pageable);
+
+    List<Order> findByCustomerFullNameContainingIgnoreCaseAndDueDateAfter(String searchQuery, LocalDate dueDate);
 
 
     Page<Order> findByCustomerFullNameContainingIgnoreCase(String s, Pageable pageable);
@@ -44,4 +47,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByCustomerAndDueDate(Customer customer, LocalDate dueDateFilter);
 
     List<Order> findByCustomerAndOrderState(Customer customer, OrderState decode);
+
+    List<Order> findByCustomerOrOrderStateOrPayment(Customer currentCustomer, OrderState state, Payment payment);
+
+    List<Order> findByCustomerAndPayment(Customer currentCustomer, Payment payment);
 }

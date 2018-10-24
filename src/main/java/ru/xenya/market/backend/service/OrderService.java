@@ -4,17 +4,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.xenya.market.backend.data.OrderState;
+import ru.xenya.market.backend.data.Payment;
 import ru.xenya.market.backend.data.entity.Customer;
 import ru.xenya.market.backend.data.entity.Order;
 import ru.xenya.market.backend.data.entity.User;
 import ru.xenya.market.backend.repositories.OrderRepository;
 import ru.xenya.market.ui.utils.converters.LocalDateToStringEncoder;
 import ru.xenya.market.ui.utils.converters.OrderStateConverter;
+import ru.xenya.market.ui.utils.converters.PaymentConverter;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class OrderService implements FilterableCrudService<Order> {
@@ -32,6 +36,7 @@ public class OrderService implements FilterableCrudService<Order> {
 
     LocalDateToStringEncoder localDateToStringEncoder = new LocalDateToStringEncoder();
     OrderStateConverter orderStateConverter = new OrderStateConverter();
+    PaymentConverter paymentConverter = new PaymentConverter();
 
     public OrderService(OrderRepository orderRepository) {
         super();
@@ -132,28 +137,94 @@ public class OrderService implements FilterableCrudService<Order> {
     }
 
     public List<Order> findByCustomerAndDueDateOrOrderState(
-            Customer customer, String dueDateFilter, String orderState) {
-        if (dueDateFilter != null && !dueDateFilter.isEmpty()) {
-            if (orderState != null && !orderState.isEmpty()) {
+            Customer customer, LocalDate dueDateFilter, OrderState orderState) {
+        if (dueDateFilter != null) {
+            if (orderState != null && !orderState.name().isEmpty()) {
                 return orderRepository.findByCustomerAndDueDateOrOrderState(
-                        customer, localDateToStringEncoder.decode(dueDateFilter),
-                        orderStateConverter.decode(orderState));
+                        customer, dueDateFilter,
+                        orderState);
 
             } else {
                 return orderRepository.findByCustomerAndDueDate(customer,
-                        localDateToStringEncoder.decode(dueDateFilter));
+                        dueDateFilter);
             }
 
-        }  else if(dueDateFilter == null && (orderState != null && !orderState.isEmpty())){
+        }  else if(orderState!= null && !orderState.name().isEmpty()){
 
-                return orderRepository.findByCustomerAndOrderState(customer,
-                                                    orderStateConverter.decode(orderState));
+            return orderRepository.findByCustomerAndOrderState(customer,
+                    orderState);
 
         }
         return orderRepository.findByCustomer(customer);
     }
 
+//    public List<Order> findByCustomerAndDueDateOrOrderState(
+//            Customer customer, String dueDateFilter, String orderState) {
+//        if (dueDateFilter != null && !dueDateFilter.isEmpty()) {
+//            if (orderState != null && !orderState.isEmpty()) {
+//                return orderRepository.findByCustomerAndDueDateOrOrderState(
+//                        customer, localDateToStringEncoder.decode(dueDateFilter),
+//                        orderStateConverter.decode(orderState));
+//
+//            } else {
+//                return orderRepository.findByCustomerAndDueDate(customer,
+//                        localDateToStringEncoder.decode(dueDateFilter));
+//            }
+//
+//        }  else if(dueDateFilter == null && (orderState != null && !orderState.isEmpty())){
+//
+//                return orderRepository.findByCustomerAndOrderState(customer,
+//                                                    orderStateConverter.decode(orderState));
+//
+//        }
+//        return orderRepository.findByCustomer(customer);
+//    }
 
+    /**
+     * это используется для упрощения строки поиска в reviewList
+     */
+    public List<Order> findOrders(Customer customer, LocalDate filter){
+
+       // String normalizedFilter = filter.toLowerCase();
+//        return findByCustomerAndDueDateOrOrderState(customer, localDateToStringEncoder.decode(filter), orderStateConverter.decode(filter))
+//                .stream().filter(order -> filterTextOf(order).contains(normalizedFilter))
+//                .sorted(((o1, o2) -> o1.getId().compareTo(o2.getId())))
+//                .collect(Collectors.toList());
+        return orderRepository.findByCustomerAndDueDate(customer, filter);
+    }
+
+
+
+    public List<Order> findByCustomerAndOrderStateOrPayment(Customer currentCustomer, OrderState state, Payment payment) {
+
+        if (state != null && !state.name().isEmpty()) {
+            return orderRepository.findByCustomerAndOrderState(currentCustomer, state);
+        } else if (payment != null && !payment.name().isEmpty()){
+            return orderRepository.findByCustomerAndPayment(currentCustomer, payment);
+        } else {
+            return orderRepository.findByCustomer(currentCustomer);
+        }
+
+    }
+
+    public List<Order> findOrdersByStateOrPayment(Customer customer, String filter){
+         String normalizedFilter = filter.toLowerCase();
+        return findByCustomer(customer)
+                .stream().filter(order -> filterTextOf(order).contains(normalizedFilter))
+                .sorted(((o1, o2) -> o1.getId().compareTo(o2.getId())))
+                .collect(Collectors.toList());
+    }
+
+    private String filterTextOf(Order order){
+        LocalDateToStringEncoder dateConverter = new LocalDateToStringEncoder();
+//        OrderStateConverter stateConverter = new OrderStateConverter();
+        String filterableText = Stream.of(order.getCustomer().getFullName(),
+                dateConverter.encode(order.getDueDate()),
+                orderStateConverter.encode(order.getOrderState()),
+                paymentConverter.encode(order.getPayment()))
+                .collect(Collectors.joining("\t"));
+        return filterableText.toLowerCase();
+    }
     /**
      * это используется для упрощения строки поиска в reviewList
      */
