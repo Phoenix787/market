@@ -136,27 +136,27 @@ public class OrderService implements FilterableCrudService<Order> {
         return orderRepository.findByCustomer(currentCustomer);
     }
 
-    public List<Order> findByCustomerAndDueDateOrOrderState(
-            Customer customer, LocalDate dueDateFilter, OrderState orderState) {
-        if (dueDateFilter != null) {
-            if (orderState != null && !orderState.name().isEmpty()) {
-                return orderRepository.findByCustomerAndDueDateOrOrderState(
-                        customer, dueDateFilter,
-                        orderState);
-
-            } else {
-                return orderRepository.findByCustomerAndDueDate(customer,
-                        dueDateFilter);
-            }
-
-        }  else if(orderState!= null && !orderState.name().isEmpty()){
-
-            return orderRepository.findByCustomerAndOrderState(customer,
-                    orderState);
-
-        }
-        return orderRepository.findByCustomer(customer);
-    }
+//    public List<Order> findByCustomerAndDueDateOrOrderState(
+//            Customer customer, LocalDate dueDateFilter, OrderState orderState) {
+//        if (dueDateFilter != null) {
+//            if (orderState != null && !orderState.name().isEmpty()) {
+//                return orderRepository.findByCustomerAndDueDateOrOrderState(
+//                        customer, dueDateFilter,
+//                        orderState);
+//
+//            } else {
+//                return orderRepository.findByCustomerAndDueDate(customer,
+//                        dueDateFilter);
+//            }
+//
+//        }  else if(orderState!= null && !orderState.name().isEmpty()){
+//
+//            return orderRepository.findByCustomerAndOrderState(customer,
+//                    orderState);
+//
+//        }
+//        return orderRepository.findByCustomer(customer);
+//    }
 
 //    public List<Order> findByCustomerAndDueDateOrOrderState(
 //            Customer customer, String dueDateFilter, String orderState) {
@@ -180,33 +180,10 @@ public class OrderService implements FilterableCrudService<Order> {
 //        return orderRepository.findByCustomer(customer);
 //    }
 
+
     /**
      * это используется для упрощения строки поиска в reviewList
      */
-    public List<Order> findOrders(Customer customer, LocalDate filter){
-
-       // String normalizedFilter = filter.toLowerCase();
-//        return findByCustomerAndDueDateOrOrderState(customer, localDateToStringEncoder.decode(filter), orderStateConverter.decode(filter))
-//                .stream().filter(order -> filterTextOf(order).contains(normalizedFilter))
-//                .sorted(((o1, o2) -> o1.getId().compareTo(o2.getId())))
-//                .collect(Collectors.toList());
-        return orderRepository.findByCustomerAndDueDate(customer, filter);
-    }
-
-
-
-    public List<Order> findByCustomerAndOrderStateOrPayment(Customer currentCustomer, OrderState state, Payment payment) {
-
-        if (state != null && !state.name().isEmpty()) {
-            return orderRepository.findByCustomerAndOrderState(currentCustomer, state);
-        } else if (payment != null && !payment.name().isEmpty()){
-            return orderRepository.findByCustomerAndPayment(currentCustomer, payment);
-        } else {
-            return orderRepository.findByCustomer(currentCustomer);
-        }
-
-    }
-
     public List<Order> findOrdersByStateOrPayment(Customer customer, String filter){
          String normalizedFilter = filter.toLowerCase();
         return findByCustomer(customer)
@@ -217,7 +194,6 @@ public class OrderService implements FilterableCrudService<Order> {
 
     private String filterTextOf(Order order){
         LocalDateToStringEncoder dateConverter = new LocalDateToStringEncoder();
-//        OrderStateConverter stateConverter = new OrderStateConverter();
         String filterableText = Stream.of(order.getCustomer().getFullName(),
                 dateConverter.encode(order.getDueDate()),
                 orderStateConverter.encode(order.getOrderState()),
@@ -225,24 +201,5 @@ public class OrderService implements FilterableCrudService<Order> {
                 .collect(Collectors.joining("\t"));
         return filterableText.toLowerCase();
     }
-    /**
-     * это используется для упрощения строки поиска в reviewList
-     */
-//    public List<Review> findReviews(String filter) {
-//        String normalizedFilter = filter.toLowerCase();
-//        return reviews.values().stream().filter(
-//                review -> filterTextOf(review).contains(normalizedFilter))
-//                .sorted(((o1, o2) -> o1.getId().compareTo(o2.getId())))
-//                .collect(Collectors.toList());
-//    }
-//
-//    private String filterTextOf(Review review){
-//        LocalDateToStringConverter dateConverter = new LocalDateToStringConverter();
-//        String filterableText = Stream.of(review.getName(), review.getCategory() == null ? StaticData.UNDEFINED :
-//                        review.getCategory().getName(), String.valueOf(review.getScore()),
-//                String.valueOf(review.getCount()),
-//                dateConverter.encode(review.getDate()))
-//                .collect(Collectors.joining("\t"));
-//        return filterableText.toLowerCase();
-//    }
+
 }

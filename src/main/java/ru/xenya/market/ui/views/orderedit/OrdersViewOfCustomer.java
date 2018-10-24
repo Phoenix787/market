@@ -48,19 +48,11 @@ import java.util.List;
 @UIScope
 public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
 
-
-
     @Id("text")
     private TextField text;
 
     @Id("search")
     private SearchBar searchBar;
-
-//    @Id("date")
-//    private DatePicker date;
-//
-//    @Id("add")
-//    private Button addOrderBtn;
 
     @Id("grid")
     private Grid<Order> grid;
@@ -84,10 +76,8 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
       //  this.form = form;
 //        presenter.setView(this);
         presenter.init(this);
-
         setupGrid();
         setupEventListeners();
-       // getSearchBar().addActionClickListener(e->presenter.createNewOrder());
       //  form.setBinder(binder);
     }
 
@@ -96,7 +86,6 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
         text.setValue(customer.getFullName());
         presenter.setCurrentCustomer(customer);
         grid.setItems(presenter.updateList());
-
     }
 
     private void setupGrid() {
@@ -133,7 +122,6 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
             }
         });
 
-//        date.addValueChangeListener(e->getPresenter().filter(e.getValue()));
 //        getForm().getButtons().addDeleteListener(e -> getPresenter().delete());
 
        getSearchBar().addActionClickListener(e -> getPresenter().createNewOrder());
@@ -206,8 +194,6 @@ public class OrdersViewOfCustomer extends CrudView<Order, TemplateModel> {
         getForm().write(entity);
 
     }
-
-
 
     public void setDialogElementsVisibility(boolean editing) {
         //dialog.add(editing ? orderEditor : orderDetails);

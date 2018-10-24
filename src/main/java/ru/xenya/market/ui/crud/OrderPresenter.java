@@ -94,19 +94,12 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
 
         return orderService.findByCustomer(currentCustomer);
     }
-    public void filter(LocalDate filter) {
-        if (filter != null)
-            view.getGrid().setItems(orderService.findOrders(currentCustomer, filter));
-        else view.getGrid().setItems(updateList());
-        //updateList(currentCustomer, filter);
-    }
+
 
     public void filter(String filter) {
             if (filter != null && !filter.isEmpty()){
-                System.out.println("===========================================================\n\nfrom filter(string) and filter not empty\n\n");
               view.getGrid().setItems(updateList(filter));
             } else {
-                System.out.println("============================================================\n\nfrom filter(string) and filter emptyn\n\n");
                 view.getGrid().setItems(updateList());
             }
     }

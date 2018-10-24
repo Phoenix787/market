@@ -42,13 +42,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     long countByOrderState(OrderState state);
 
-    List<Order> findByCustomerAndDueDateOrOrderState(Customer customer, LocalDate dueDateFilter, OrderState orderState);
-
     List<Order> findByCustomerAndDueDate(Customer customer, LocalDate dueDateFilter);
 
-    List<Order> findByCustomerAndOrderState(Customer customer, OrderState decode);
 
-    List<Order> findByCustomerOrOrderStateOrPayment(Customer currentCustomer, OrderState state, Payment payment);
 
-    List<Order> findByCustomerAndPayment(Customer currentCustomer, Payment payment);
 }
