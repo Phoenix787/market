@@ -29,7 +29,7 @@ public class Price extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderColumn
     @JoinColumn
-    private List<ItemPrice> itemsPrice;
+    private List<PriceItem> itemsPrice;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @OrderColumn
@@ -47,9 +47,9 @@ public class Price extends AbstractEntity {
     public Price(Price other, User createdBy){
         this.defaultPrice = true;
         this.date = LocalDate.now();
-        ArrayList<ItemPrice> itemsPrice = new ArrayList<>();
-        Iterator<ItemPrice> iterator = other.itemsPrice.iterator();
-        ItemPrice itemPrice;
+        ArrayList<PriceItem> itemsPrice = new ArrayList<>();
+        Iterator<PriceItem> iterator = other.itemsPrice.iterator();
+        PriceItem itemPrice;
         while (iterator.hasNext()){
             itemPrice = iterator.next();
             itemsPrice.add(itemPrice);

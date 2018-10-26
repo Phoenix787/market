@@ -1,30 +1,26 @@
 package ru.xenya.market.ui.views.admin.prices;
 
 import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.shared.Registration;
-import ru.xenya.market.backend.data.entity.ItemPrice;
+import ru.xenya.market.backend.data.entity.PriceItem;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class PriceItemsEditor extends Div
-        implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<PriceItemsEditor,List<ItemPrice>>, List<ItemPrice>> {
+        implements HasValueAndElement<AbstractField.ComponentValueChangeEvent<PriceItemsEditor,List<PriceItem>>, List<PriceItem>> {
 
     //todo PriceItemEditor
  //   private PriceItemEditor empty;
 
     private boolean hasChanges = false;
 
-    private final AbstractFieldSupport<PriceItemsEditor, List<ItemPrice>> fieldSupport;
+    private final AbstractFieldSupport<PriceItemsEditor, List<PriceItem>> fieldSupport;
 
     public PriceItemsEditor() {
 
@@ -47,17 +43,17 @@ public class PriceItemsEditor extends Div
     }
 
     @Override
-    public void setValue(List<ItemPrice> value) {
+    public void setValue(List<PriceItem> value) {
 
     }
 
     @Override
-    public List<ItemPrice> getValue() {
+    public List<PriceItem> getValue() {
         return null;
     }
 
     @Override
-    public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<PriceItemsEditor, List<ItemPrice>>> listener) {
+    public Registration addValueChangeListener(ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<PriceItemsEditor, List<PriceItem>>> listener) {
         return null;
     }
 }
