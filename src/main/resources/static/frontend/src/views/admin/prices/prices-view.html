@@ -1,0 +1,32 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../../bower_components/vaadin-grid/src/vaadin-grid.html">
+
+<link rel="import" href="../../../components/search-bar.html">
+<link rel="import" href="../../../components/utils-mixin.html">
+
+<link rel="import" href="../../../../styles/shared-styles.html">
+
+<dom-module id="prices-view">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
+        </style>
+
+        <search-bar id="search"></search-bar>
+        <vaadin-grid id="crud" theme="crud"></vaadin-grid>
+    </template>
+    <script>
+        class PricesView extends Polymer.Element {
+            static get is(){
+                return 'prices-view';
+            }
+        }
+
+        window.currentElements.define(PricesView.is, PricesView);
+    </script>
+
+</dom-module>

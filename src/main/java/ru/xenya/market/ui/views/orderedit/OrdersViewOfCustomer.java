@@ -38,7 +38,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 
-//todo строка поиска по дате нужно или нет? пока что не работает парсер. как сделать чтобы поиск по строке происходил по энтеру
 //todo попробовать сделать страницу похожую на reviewList в buddyApp
 
 @Tag("orders-view-of-customer")

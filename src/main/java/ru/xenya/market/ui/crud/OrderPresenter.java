@@ -58,6 +58,8 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
         this.view.getOpenedOrderEditor().setCurrentUser(currentUser);
         this.view.getOpenedOrderEditor().addCancelListener(e -> cancel());
         this.view.getOpenedOrderEditor().addSaveListener(e -> save());
+       // this.view.getOpenedOrderEditor().addCommentListener(e -> addComment(e.getMessage()));
+        //todo добавить OrderDetails
 
 
 //        view.getOpenedOrderDetails().addSaveListenter(e -> save());
@@ -68,6 +70,7 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
     }
 
     public void onNavigation(Long id, boolean edit) {
+
         entityPresenter.loadEntity(id, e -> open(e, edit));
     }
 
@@ -225,6 +228,12 @@ public class OrderPresenter extends CrudEntityPresenter<Order> {
         view.getDialog().close();
     }
     //}
+
+    void addComment(String comment){
+        if (entityPresenter.executeUpdate(e -> orderService.addComment(currentUser, e, comment))) {
+            open(entityPresenter.getEntity(), false);
+        }
+    }
 
 
 }

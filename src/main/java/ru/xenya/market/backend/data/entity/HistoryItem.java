@@ -2,13 +2,14 @@ package ru.xenya.market.backend.data.entity;
 
 import ru.xenya.market.backend.data.OrderState;
 
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-//@Entity
+@Entity
 public class HistoryItem extends AbstractEntity {
     private OrderState newState;
 

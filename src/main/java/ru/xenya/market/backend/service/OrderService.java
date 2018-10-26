@@ -111,6 +111,12 @@ public class OrderService implements FilterableCrudService<Order> {
         return order;
     }
 
+    @Transactional(rollbackOn = Exception.class)
+    public Order addComment(User currentUser, Order order, String comment){
+        order.addHistoryItem(currentUser, comment);
+        return orderRepository.save(order);
+    }
+
     @Override
     public Page<Order> findAnyMatching(Optional<String> filter, Pageable pageable) {
         if (filter.isPresent()){

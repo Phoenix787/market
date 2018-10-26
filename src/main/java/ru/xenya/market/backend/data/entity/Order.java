@@ -57,6 +57,7 @@ public class Order extends AbstractEntity {
         this.payment = Payment.CASH;
         this.dueDate = LocalDate.now();
         setCustomer(customer);
+        //this.items = new ArrayList<>();
        // addHistoryItem(createdBy, "Заказ размещён");
     }
 

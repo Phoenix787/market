@@ -134,30 +134,6 @@ public class OrderEditor extends PolymerTemplate<OrderEditor.Model>
             customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
         }
 
-//        binder.forField(status)
-//                .withValidator(new BeanValidator(Order.class, "orderState"))
-//                .bind(Order::getOrderState, (o, s)->{
-//                    o.changeState(currentUser, s);
-//                });
-//        dueDate.setRequired(true);
-//        binder.bind(dueDate, "dueDate");
-////        //todo для поля дата установить валидатор
-////
-//        payment.setItemLabelGenerator(createItemLabelGenerator(Payment::name));
-//        payment.setDataProvider(DataProvider.ofItems(Payment.values()));
-//        binder.bind(payment, "payment");
-//        payment.setRequired(true);
-//
-//        binder.bind(customerName, "customer.fullName");
-//        binder.bind(customerPhone, "customer.phoneNumbers");
-//
-//        if (currentOrder != null) {
-//
-//            customerName.setValue(binder.getBean().getCustomer().getFullName());
-//            customerPhone.setValue(binder.getBean().getCustomer().getPhoneNumbers());
-//        }
-//
-//
 //
 ////        itemsEditor.setRequiredIndicatorVisible(true);
 ////        binder.bind(itemsEditor, "items");
