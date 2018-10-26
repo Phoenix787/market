@@ -8,10 +8,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.xenya.market.app.HasLogger;
@@ -25,12 +22,17 @@ import ru.xenya.market.ui.views.EntityView;
 
 import java.util.stream.Stream;
 
+import static ru.xenya.market.ui.utils.MarketConst.*;
+
 // это как сustomerviewtemplate
+
+//todo почему не отображается ни поиск ни таблица???
 @Tag("prices-view")
 @HtmlImport("src/views/admin/prices/prices-view.html")
-@Route(value = MarketConst.PAGE_PRODUCTS, layout = MainView.class)
-@PageTitle(MarketConst.TITLE_PRODUCTS)
+@Route(value = PAGE_PRODUCTS, layout = MainView.class)
+@PageTitle(TITLE_PRODUCTS)
 
+//может сделать  CrudView<Customer, TemplateModel>
 public class PricesView extends PolymerTemplate<TemplateModel>
         implements HasLogger, HasUrlParameter<Long>, EntityView<Price> {
 
@@ -57,7 +59,8 @@ public class PricesView extends PolymerTemplate<TemplateModel>
         search.setActionText("Новый прайс");
         search.setPlaceHolder("Поиск");
 
-        grid.setSelectionMode(Grid.SelectionMode.NONE);
+        setupGrid();
+
 
         presenter.init(this);
 
@@ -73,6 +76,7 @@ public class PricesView extends PolymerTemplate<TemplateModel>
     private void setupGrid() {
         grid.addColumn(Price::getId).setHeader("№").setWidth("50px").setFlexGrow(10);
         grid.addColumn(Price::getDate).setHeader("Дата").setFlexGrow(10);
+       // grid.setSelectionMode(Grid.SelectionMode.NONE);
 
     }
 
@@ -94,19 +98,18 @@ public class PricesView extends PolymerTemplate<TemplateModel>
     public Grid<Price> getGrid() {
         return grid;
     }
-
     @Override
-    public void setParameter(BeforeEvent event, Long parameter) {
-        boolean editView = event.getLocation().getPath().contains(MarketConst.PAGE_PRODUCTS);
-        if (parameter != null) {
-            presenter.onNavigation(parameter, editView);
+    public void setParameter(BeforeEvent event, @OptionalParameter Long idPrice) {
+      //  boolean editView = event.getLocation().getPath().contains(PAGE_PRODUCTS_EDIT);
+        if (idPrice != null) {
+            presenter.onNavigation(idPrice, true);
         } else if (dialog.isOpened()) {
             presenter.closeSilently();
         }
     }
 
     void navigateToMainView() {
-        getUI().ifPresent(ui -> ui.navigate(MarketConst.PAGE_PRODUCTS));
+        getUI().ifPresent(ui -> ui.navigate(PAGE_PRODUCTS));
     }
 
     @Override
@@ -124,9 +127,9 @@ public class PricesView extends PolymerTemplate<TemplateModel>
         priceEditor.write(entity);
     }
 
-    public Stream<HasValue<?,?>> validate(){
-        return priceEditor.validate();
-    }
+//    public Stream<HasValue<?,?>> validate(){
+//        return priceEditor.validate();
+//    }
 
 
     @Override

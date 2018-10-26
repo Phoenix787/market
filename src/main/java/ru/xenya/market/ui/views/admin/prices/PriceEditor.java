@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  */
 
 @Tag("price-editor")
-@HtmlImport("src/views/prices/price-editor.html")
+@HtmlImport("src/views/admin/prices/price-editor.html")
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class PriceEditor extends PolymerTemplate<TemplateModel> {//implements CrudForm<Price> {

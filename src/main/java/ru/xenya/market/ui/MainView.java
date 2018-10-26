@@ -45,6 +45,7 @@ public class MainView extends /*VerticalLayout*/ PolymerTemplate<TemplateModel>
         List<PageInfo> pages = new ArrayList<>();
         pages.add(new PageInfo(PAGE_STOREFRONT, ICON_STOREFRONT, TITLE_STOREFRONT));
         pages.add(new PageInfo(PAGE_CUSTOMERS, ICON_CUSTOMERS, TITLE_CUSTOMERS));
+        pages.add(new PageInfo(PAGE_PRODUCTS, ICON_PRODUCTS, TITLE_PRODUCTS));
         pages.add(new PageInfo(PAGE_USERS, ICON_USERS, TITLE_USERS));
 //        if (SecurityUtils.isAccessGranted(UsersView.class)){
 //            pages.add(new PageInfo(PAGE_USERS, ICON_USERS, TITLE_USERS));

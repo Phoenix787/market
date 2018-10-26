@@ -18,7 +18,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Entity(name = "prices")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class Price extends AbstractEntity {
 
@@ -38,6 +37,9 @@ public class Price extends AbstractEntity {
 
     private boolean defaultPrice;
 
+    public Price(){
+
+    }
     public Price(User createdBy){
         this.defaultPrice = true;
         this.date = LocalDate.now();

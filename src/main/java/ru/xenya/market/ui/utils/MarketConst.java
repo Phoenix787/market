@@ -14,6 +14,7 @@ public class MarketConst {
     public static final String PAGE_CUSTOMERS = "customers";
     public static final String PAGE_USERS = "users";
     public static final String PAGE_PRODUCTS = "products";
+    public static final String PAGE_PRODUCTS_EDIT = "products/edit";
     public static final String PAGE_LOGOUT = "logout";
     public static final String PAGE_DEFAULT = PAGE_STOREFRONT;
 
