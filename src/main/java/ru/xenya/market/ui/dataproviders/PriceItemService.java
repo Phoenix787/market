@@ -37,6 +37,7 @@ public class PriceItemService implements FilterableCrudService<PriceItem> {
         return repository;
     }
 
+
     @Override
     public PriceItem createNew(User user) {
         return null;

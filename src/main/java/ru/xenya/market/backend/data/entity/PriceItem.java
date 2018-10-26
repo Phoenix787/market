@@ -46,6 +46,7 @@ public class PriceItem extends AbstractEntity {
         this.owner = owner;
     }
 
+
     @Override
     public String toString() {
         return name + ' ' + price.toString();
